@@ -1,0 +1,10 @@
+.dayNames{
+  display: flex;
+  justify-content: space-between;
+
+
+}
+
+.dayNames > *:nth-last-child(-n+2){
+  color: red;
+}
