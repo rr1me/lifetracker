@@ -1,0 +1,87 @@
+@use "../../../vars" as v;
+@use "../ScheduleGlobal" as g;
+
+.dayObjects {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(6, auto);
+  gap: g.$gap;
+}
+
+.day {
+  height: 134px;
+  border-radius: 10px;
+
+  background: rgba(51, 51, 51, 0.35);
+  background-blend-mode: lighten;
+  border: 1px solid #404040;
+  box-shadow: 0 0 9px rgba(0, 0, 0, 0.62);
+
+  padding: 10px 10px;
+
+  font: 500 12px HelveticaNeueCyr;
+}
+
+.dayInner {
+  height: 100%;
+  width: 100%;
+}
+
+.events{
+  height: 100%;
+  overflow: hidden;
+}
+
+.redTab {
+  height: 2px;
+  width: 6px;
+  background-color: red;
+  margin-inline: 5px;
+  align-self: center;
+
+  border-radius: 5px;
+}
+
+.timeRange{
+  display: flex;
+}
+
+.timeTaken{
+  color: v.$c_dark;
+}
+
+.darkDot{
+  width: 3px;
+  height: 2px;
+  background-color: v.$c_dark;
+  border-radius: 5px;
+}
+
+.darkDots{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  margin-inline: 3px;
+}
+
+.event{
+  display: flex;
+}
+
+.description{
+  display: flex;
+  align-items: center;
+}
+
+.separator{
+  background-color: v.$c_border;
+  width: 100%;
+  height: 1px;
+  border-radius: 5px;
+}
+
+.date{
+  position: relative;
+  top: -18px;
+  height: 0;
+}
