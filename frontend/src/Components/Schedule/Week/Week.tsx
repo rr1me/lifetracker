@@ -1,6 +1,6 @@
 import s from './Week.module.scss';
 
-const Week = () => {
+const Week = () => { //all arrays throwing key exceptions
 	return (
 		<div className={s.week}>
 			<div className={s.timeRange}>

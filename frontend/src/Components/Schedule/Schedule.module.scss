@@ -27,16 +27,12 @@
 }
 
 .switcher{
+  //width: max-content;
   position: absolute;
-  //width: 100%;
-  //height: 100%;
-  //height: 15px;
+  width: 48px;
+  height: 21px;
   display: flex;
   font-size: 15px;
-}
-
-.switcher > *{
-  flex-grow: 1;
 }
 
 .separator{

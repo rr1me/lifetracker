@@ -11,16 +11,23 @@ const Schedule = () => {
 	const {monthOrWeek} = useSelector((state: {scheduleSlice: IScheduleSlice}) => state.scheduleSlice);
 	const dispatch = useDispatch()
 
-	const onSwitcherClick = (mow: boolean) => () => dispatch(setMonthOrWeek(mow))
+	const onSwitcherClick = (mow: boolean) => () => {
+		if (mow === monthOrWeek)
+		{
+			console.log('хуй');
+			return;
+		}
+		dispatch(setMonthOrWeek(mow))
+	}
 
 	return (
 		<div className={s.schedule}>
+			<div className={s.switcher}>
+				<button onClick={onSwitcherClick(false)}>{Icons.month}</button>
+				<div className={s.separator}/>
+				<button onClick={onSwitcherClick(true)}>{Icons.week}</button>
+			</div>
 			<div className={s.dayNames + (monthOrWeek ? ' ' + s.weekDayNames : '')}>
-				<div className={s.switcher}>
-					<button onClick={onSwitcherClick(false)}>{Icons.month}</button>
-					<div className={s.separator}/>
-					<button onClick={onSwitcherClick(true)}>{Icons.week}</button>
-				</div>
 				{dayNames.map((x,i) => <span key={x}>{x}</span>)}
 			</div>
 
