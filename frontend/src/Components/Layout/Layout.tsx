@@ -5,14 +5,12 @@ import Schedule from '../Schedule/Schedule';
 
 const Layout = () => {
 	return (
-		<div className={s.layout}>
-			<BrowserRouter>
-				<Navbar/>
-				<div className={s.content}>
-					<Schedule/>
-				</div>
-			</BrowserRouter>
-		</div>
+		<BrowserRouter>
+			<Navbar/>
+			<div className={s.content}>
+				<Schedule/>
+			</div>
+		</BrowserRouter>
 	)
 };
 

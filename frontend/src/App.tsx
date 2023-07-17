@@ -4,11 +4,9 @@ import Layout from './Components/Layout/Layout';
 import { eventApi, useGetMonthQuery } from './redux/api/eventApi';
 
 function App() {
-	const { data, error, isLoading } = useGetMonthQuery('01.2023');
+	const { data, error, isLoading } = useGetMonthQuery('2023.05');
 
 	console.log(data, error, isLoading);
-
-	console.log(eventApi);
 
 	return (
 		<div className='App'>

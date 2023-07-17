@@ -1,6 +1,6 @@
 import s from './Week.module.scss';
 
-const Week = () => { //all arrays throwing key exceptions
+const Week = () => {
 	return (
 		<div className={s.week}>
 			<div className={s.timeRange}>
@@ -8,18 +8,21 @@ const Week = () => { //all arrays throwing key exceptions
 					{Array(25).fill(':00').map((v, i) => <div key={i}>{(i < 10 ? '0' + i : i) + v}</div>)}
 				</div>
 				<div className={s.lines}>
-					{Array(145).fill(<div className={s.clockLine} />)}
+					{Array(145).fill(0).map((v, i) => <div className={s.clockLine} key={i} />)}
 				</div>
 			</div>
 			<div className={s.grid}>
 				<div className={s.gridVertical}>
-					{Array(25).fill(<div className={s.horizontalLine} />)}
+					{Array(25).fill(0).map((v, i) => <div className={s.horizontalLine} key={i} />)}
 				</div>
 				<div className={s.gridHorizontal}>
-					{Array(8).fill(<div className={s.verticalLine} />)}
+					{Array(8).fill(0).map((v, i) => <div className={s.verticalLine} key={i} />)}
 				</div>
 				<div className={s.dayEvents}>
-					{Array(1).fill(0).map((v, i) => dayEvent(0))}
+					{Array(1).fill(0).map((v, i) =>
+						<div key={i}>
+							{Array(24).fill(0).map((v, i) => dayEvent(i))}
+						</div>)}
 				</div>
 			</div>
 		</div>
@@ -29,13 +32,17 @@ const Week = () => { //all arrays throwing key exceptions
 export default Week;
 
 const minHeight = 34.9;
-const distance = 5.819;
+// const distance = 5.819;
+const distance = 0
 
 const dayEvent = (x: number) => (
-	<div className={s.event} style={{
-		transform: `translateY(calc(+${x * 100}% + ${distance}px))`,
-		height: minHeight + distance * 6 * 0,
-	}}>
+	<div className={s.event} key={x}
+		// style={{
+		// transform: `translateY(calc(+${x * 100}% + ${distance}px)) translateX(${x * 101.7}%)`,
+		// transform: `translateX(calc(+${x * 100}% + ${distance}px))`,
+		// height: minHeight + distance * 6 * 0,
+		// }}
+	>
 		aklsdfjasdf
 		{outliner(Boolean(x % 2))}
 	</div>

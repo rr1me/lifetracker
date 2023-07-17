@@ -16,7 +16,7 @@ export const eventApi = createApi({
 	baseQuery: fetchBaseQuery({ baseUrl: 'https://localhost:7121' }),
 	endpoints: (builder) => ({
 		getMonth: builder.query<Month, string>({
-			query: (month) => `month?m=${month}`,
+			query: (datemark) => `month?datemark=${datemark}`,
 		}),
 	}),
 });

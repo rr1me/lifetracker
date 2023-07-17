@@ -6,14 +6,27 @@ namespace backend.Controllers;
 public class MainController : ControllerBase
 {
     [HttpGet("/month")]
-    public IActionResult GetMonth(string m)
+    public IActionResult GetMonth(float dateMark)
     {
-        var day = new Day(m, new List<Event>
-        {
-            new Event(638223881710000000, 638223881710000001, "ffs go do some math")
-        });
+        var month = new List<Day>();
 
-        return Ok(day);
+        for (var i = 0; i < 31; i++)
+        {
+            if (i == 15 || i == 28)
+                continue;
+
+            month.Add(
+                new Day(dateMark, 1230, i, new List<Event>
+                {
+                    new(0, 120, "ffs go do some math"),
+                    new(120, 360, "?"),
+                    new(420, 500, "st"),
+                    new(1020, 1440, "fu")
+                })
+            );
+        }
+
+        return Ok(month);
 
 
 //         return Ok($@"{{

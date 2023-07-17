@@ -82,12 +82,14 @@
 
 .dayEvents{
   margin-top: 1px;
+  margin-left: 3px;
+  display: flex;
+  gap: 4.1px;
 }
 
 .event{
-  position: absolute;
   min-height: 34.9px;
-  width: 194px;
+  width: 191px;
   background-color: v.$c_main;
   border-radius: 1px;
 
