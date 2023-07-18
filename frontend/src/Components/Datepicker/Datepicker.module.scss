@@ -1,0 +1,59 @@
+.openButton{
+  cursor: pointer;
+}
+
+.outer{
+  font-size: 13px;
+  padding: 10px;
+
+  width: 200px;
+  //height: 172px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.dateRow{
+  display: flex;
+  justify-content: space-between;
+}
+
+.arrows{
+  display: flex;
+  font-size: 1.3em;
+}
+
+.dayNamesRow{
+  display: flex;
+  justify-content: space-between;
+}
+
+.dayNamesRow > *:nth-last-child(-n+2){
+  color: red;
+}
+
+.daysRow{
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+
+  padding-inline: 3px;
+}
+
+.daysRowInner{
+  cursor: pointer;
+  margin-inline: -7px;
+
+  border-radius: 3px;
+}
+
+.daysRowInner:hover{
+  background: linear-gradient(135deg, rgba(75, 74, 74, 0.50) 0%, rgba(0, 0, 0, 0.50) 71.35%, rgba(183, 19, 19, 0.50) 100%);
+}
+
+.dayNumbers{
+  display: flex;
+  justify-content: space-between;
+  padding-inline: 7px;
+}

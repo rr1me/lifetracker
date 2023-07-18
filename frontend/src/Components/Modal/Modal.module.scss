@@ -1,0 +1,13 @@
+@use '../../vars' as v;
+
+.modal{
+  position: absolute;
+  border: v.$c_border;
+  margin-top: 5px;
+
+  z-index: 1;
+
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.20);
+  backdrop-filter: blur(7.5px);
+}
