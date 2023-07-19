@@ -28,7 +28,7 @@ const Modal: FC<{
 
 		if (!modalRef.current) return;
 		const modalRect = modalRef.current.getBoundingClientRect();
-		modalRef.current.style.left = width / 2 + modalRect.x - modalRect.width / 2 + 'px'; //todo use that in prod instead of below one
+		// modalRef.current.style.left = width / 2 + modalRect.x - modalRect.width / 2 + 'px'; //todo use that in prod instead of below one
 		// modalRef.current.style.left = '1563.99px';
 
 		return () => {

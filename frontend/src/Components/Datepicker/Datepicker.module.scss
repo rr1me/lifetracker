@@ -1,3 +1,5 @@
+@use '../../vars' as v;
+
 .openButton{
   cursor: pointer;
 }
@@ -6,7 +8,7 @@
   font-size: 13px;
   padding: 10px;
 
-  width: 200px;
+  width: 230px;
   //height: 172px;
 
   display: flex;
@@ -17,6 +19,7 @@
 .dateRow{
   display: flex;
   justify-content: space-between;
+  padding-left: 3px;
 }
 
 .arrows{
@@ -26,7 +29,11 @@
 
 .dayNamesRow{
   display: flex;
-  justify-content: space-between;
+}
+
+.dayNamesRow > *{
+  text-align: center;
+  width: 290px;
 }
 
 .dayNamesRow > *:nth-last-child(-n+2){
@@ -35,15 +42,13 @@
 
 .daysRow{
   display: flex;
-  gap: 10px;
   flex-direction: column;
 
-  padding-inline: 3px;
+  margin-top: -5px;
 }
 
 .daysRowInner{
   cursor: pointer;
-  margin-inline: -7px;
 
   border-radius: 3px;
 }
@@ -54,6 +59,15 @@
 
 .dayNumbers{
   display: flex;
-  justify-content: space-between;
-  padding-inline: 7px;
+  height: 25px;
+  align-items: center;
+}
+
+.dayNumbers > *{
+  width: 290px;
+  text-align: center;
+}
+
+.darkDay{
+  color: v.$c_dark
 }
