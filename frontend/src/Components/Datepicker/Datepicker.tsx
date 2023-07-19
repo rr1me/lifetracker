@@ -1,14 +1,25 @@
 import s from './Datepicker.module.scss';
 import icons from '../Icons/Icons';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useLayoutEffect } from 'react';
 import Modal from '../Modal/Modal';
+
+let chosenWeek = 3;
 
 const Datepicker = () => {
 	const currentMonth = 6;
 	const currentYear = 2023;
 
+	const chosenWeekRef = useRef<HTMLDivElement>(null);
+
 	const openButtonRef = useRef(null);
 	const [open, setOpen] = useState(true);
+
+	// useLayoutEffect(() => {
+	// 	if (!chosenWeekRef.current) return;
+	//
+	// 	chosenWeekRef.current!.style.transform = `translateY(${chosenWeek * 100}%)`;
+	// 	chosenWeekRef.current!.style.transition = '100ms';
+	// }, [open]);
 
 	const onOpenButton = (e: React.MouseEvent) => {
 		e.stopPropagation();
@@ -29,6 +40,19 @@ const Datepicker = () => {
 		}
 		return monthMatrix;
 	};
+
+	const onClickDaysRow = (index: number) => () => {
+		chosenWeek = index;
+	}
+	const onOverDaysRow = (index: number) => () => {
+		chosenWeekRef.current!.style.transform = `translateY(${index * 100}%)`;
+	}
+	const onOutDaysRow = () => {
+		const currentWeek = Number(chosenWeekRef.current!.style.transform.match(/\d+/g))/100;
+
+		if (currentWeek !== chosenWeek)
+			chosenWeekRef.current!.style.transform = `translateY(${chosenWeek * 100}%)`;
+	}
 
 	return (
 		<div>
@@ -65,7 +89,13 @@ const Datepicker = () => {
 					{/*</div>*/}
 					<div className={s.daysRow}>
 						{handledMonthList().map((v, i) => (
-							<div key={i} className={s.daysRowInner} onClick={() => console.log(i)}>
+							<div
+								key={i}
+								className={s.daysRowInner}
+								onClick={onClickDaysRow(i)}
+								onMouseOverCapture={onOverDaysRow(i)}
+								onMouseOutCapture={onOutDaysRow}
+							>
 								<div className={s.dayNumbers}>
 									{v.map((vi, ii) => (
 										<span
@@ -80,6 +110,7 @@ const Datepicker = () => {
 								</div>
 							</div>
 						))}
+						<div className={s.chosenWeek} ref={chosenWeekRef} style={{transform: `translateY(${chosenWeek * 100}%)`}}/>
 					</div>
 				</div>
 			</Modal>
