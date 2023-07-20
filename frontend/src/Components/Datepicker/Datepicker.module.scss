@@ -24,16 +24,26 @@
 
 .arrows{
   display: flex;
-  font-size: 1.3em;
+  font-size: 1.4em;
+  gap:10px;
+  user-select: none;
+}
+
+.actualArrow{
+  cursor: pointer;
+  transition: 100ms;
+}
+.actualArrow:hover{
+  transform: scale(130%);
 }
 
 .dayNamesRow{
   display: flex;
 }
 
-.dayNamesRow > *{
+.dayNamesRow > *, .dayNumbers > *{
   text-align: center;
-  width: 290px;
+  width: 100%;
 }
 
 .dayNamesRow > *:nth-last-child(-n+2){
@@ -48,11 +58,13 @@
 }
 
 .daysRowInner{
-  cursor: pointer;
-
   border-radius: 3px;
 
   z-index: 1;
+}
+
+.daysRowInnerClickable{
+  cursor: pointer;
 }
 
 .chosenWeek{
@@ -71,8 +83,6 @@
 }
 
 .dayNumbers > *{
-  width: 290px;
-  text-align: center;
   pointer-events: none;
 }
 

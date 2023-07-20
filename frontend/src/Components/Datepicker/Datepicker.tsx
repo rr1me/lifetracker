@@ -1,35 +1,45 @@
 import s from './Datepicker.module.scss';
 import icons from '../Icons/Icons';
-import React, { useState, useRef, useLayoutEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import Modal from '../Modal/Modal';
+import { actions, IScheduleSlice } from '../../redux/slices/scheduleSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
-let chosenWeek = 3;
+const { setDate } = actions;
 
 const Datepicker = () => {
-	const currentMonth = 6;
-	const currentYear = 2023;
+	const { date } = useSelector((state: { scheduleSlice: IScheduleSlice }) => state.scheduleSlice);
+	const dispatch = useDispatch();
+	const [currentDate, setCurrentDate] = useState({ year: date.year, month: date.month });
 
 	const chosenWeekRef = useRef<HTMLDivElement>(null);
 
 	const openButtonRef = useRef(null);
 	const [open, setOpen] = useState(true);
 
-	// useLayoutEffect(() => {
-	// 	if (!chosenWeekRef.current) return;
-	//
-	// 	chosenWeekRef.current!.style.transform = `translateY(${chosenWeek * 100}%)`;
-	// 	chosenWeekRef.current!.style.transition = '100ms';
-	// }, [open]);
-
 	const onOpenButton = (e: React.MouseEvent) => {
 		e.stopPropagation();
 		setOpen(v => !v);
 	};
 
-	const monthList = [
-		26, 27, 28, 29, 30, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-		26, 27, 28, 29, 30, 31, 1, 2, 3, 4, 5, 6,
-	];
+	const monthList: number[] = [];
+	const dayCount = getDaysInMonth(currentDate.month, currentDate.year);
+	const prevDayCount = getDaysInMonth(currentDate.month - 1, currentDate.year);
+	const startingDayNumberUnfixed = new Date(currentDate.year, currentDate.month).getDay() - 1;
+	const startingDayNumber = startingDayNumberUnfixed !== -1 ? startingDayNumberUnfixed : 6;
+
+	for (let i = 0; i < 42; i++) {
+		if (i < startingDayNumber) {
+			monthList.push(prevDayCount - startingDayNumber + 1 + i);
+			continue;
+		}
+		if (i - startingDayNumber + 1 > dayCount) {
+			monthList.push(i - startingDayNumber + 1 - dayCount);
+			continue;
+		}
+
+		monthList.push(i - startingDayNumber + 1);
+	}
 
 	const handledMonthList = () => {
 		const monthMatrix = [];
@@ -42,17 +52,47 @@ const Datepicker = () => {
 	};
 
 	const onClickDaysRow = (index: number) => () => {
-		chosenWeek = index;
-	}
-	const onOverDaysRow = (index: number) => () => {
-		chosenWeekRef.current!.style.transform = `translateY(${index * 100}%)`;
-	}
-	const onOutDaysRow = () => {
-		const currentWeek = Number(chosenWeekRef.current!.style.transform.match(/\d+/g))/100;
+		if (startingDayNumber + dayCount < 36 && index === 5) return;
 
-		if (currentWeek !== chosenWeek)
-			chosenWeekRef.current!.style.transform = `translateY(${chosenWeek * 100}%)`;
-	}
+		dispatch(setDate({ year: currentDate.year, month: currentDate.month, week: index }));
+
+		if (chosenWeekRef.current!.style.opacity === '0') {
+			chosenWeekRef.current!.style.transform = `translateY(${index * 100}%)`;
+			chosenWeekRef.current!.style.transition = '150ms';
+			chosenWeekRef.current!.style.opacity = '1';
+		}
+	};
+	const onOverDaysRow = (index: number) => () => {
+		if (chosenWeekRef.current!.style.opacity === '0' || (startingDayNumber + dayCount < 36 && index === 5)) return;
+		chosenWeekRef.current!.style.transform = `translateY(${index * 100}%)`;
+	};
+	const onOutDaysRow = () => {
+		if (chosenWeekRef.current!.style.opacity === '0') return;
+		const currentWeek = Number(chosenWeekRef.current!.style.transform.match(/\d+/g)) / 100;
+
+		if (currentWeek !== date.week) chosenWeekRef.current!.style.transform = `translateY(${date.week * 100}%)`;
+	};
+
+	const onArrowClick = (direction: boolean) => () => {
+		setCurrentDate(v => {
+			let d;
+			if ((v.month === 0 && !direction) || (v.month === 11 && direction)) {
+				d = direction ? { year: v.year + 1, month: 0 } : { year: v.year - 1, month: 11 };
+			} else {
+				d = direction ? { ...v, month: v.month + 1 } : { ...v, month: v.month - 1 };
+			}
+
+			if (d.year !== date.year || d.month !== date.month) {
+				chosenWeekRef.current!.style.transition = 'none';
+				chosenWeekRef.current!.style.opacity = '0';
+			} else if (chosenWeekRef.current!.style.opacity === '0') {
+				chosenWeekRef.current!.style.transition = '150ms';
+				chosenWeekRef.current!.style.opacity = '1';
+			}
+
+			return d;
+		});
+	};
 
 	return (
 		<div>
@@ -62,9 +102,16 @@ const Datepicker = () => {
 			<Modal setState={setOpen} state={open} elemRef={openButtonRef} strictWidth={false}>
 				<div onClick={e => e.stopPropagation()} className={s.outer}>
 					<div className={s.dateRow}>
-						<div className={s.currentDate}>August 2023</div>
+						<div className={s.currentDate}>
+							{monthNames[currentDate.month]} {currentDate.year}
+						</div>
 						<div className={s.arrows}>
-							{icons.arrowLeft} {icons.arrowRight}
+							<span onClick={onArrowClick(false)} className={s.actualArrow}>
+								{icons.arrowLeft}
+							</span>
+							<span onClick={onArrowClick(true)} className={s.actualArrow}>
+								{icons.arrowRight}
+							</span>
 						</div>
 					</div>
 					<div className={s.dayNamesRow}>
@@ -72,26 +119,14 @@ const Datepicker = () => {
 							<span key={x}>{x}</span>
 						))}
 					</div>
-					{/*<div className={s.daysRow}>*/}
-					{/*	{Array(6)*/}
-					{/*		.fill(0)*/}
-					{/*		.map((v, i) => (*/}
-					{/*			<div key={i} className={s.daysRowInner}>*/}
-					{/*				<div className={s.dayNumbers}>*/}
-					{/*					{Array(7)*/}
-					{/*						.fill(0)*/}
-					{/*						.map((v, i) => (*/}
-					{/*							<span key={i}>{i + 6}</span>*/}
-					{/*						))}*/}
-					{/*				</div>*/}
-					{/*			</div>*/}
-					{/*		))}*/}
-					{/*</div>*/}
 					<div className={s.daysRow}>
 						{handledMonthList().map((v, i) => (
 							<div
 								key={i}
-								className={s.daysRowInner}
+								className={
+									s.daysRowInner +
+									(i === 5 && startingDayNumber + dayCount < 36 ? '' : ' ' + s.daysRowInnerClickable)
+								}
 								onClick={onClickDaysRow(i)}
 								onMouseOverCapture={onOverDaysRow(i)}
 								onMouseOutCapture={onOutDaysRow}
@@ -101,7 +136,7 @@ const Datepicker = () => {
 										<span
 											key={ii}
 											className={
-												(i === 0 && vi > 20) || (i === 5 && vi < 15) ? s.darkDay : undefined
+												(i === 0 && vi > 20) || (i > 3 && vi < 15) ? s.darkDay : undefined
 											}
 										>
 											{vi}
@@ -110,7 +145,11 @@ const Datepicker = () => {
 								</div>
 							</div>
 						))}
-						<div className={s.chosenWeek} ref={chosenWeekRef} style={{transform: `translateY(${chosenWeek * 100}%)`}}/>
+						<div
+							className={s.chosenWeek}
+							ref={chosenWeekRef}
+							style={{ transform: `translateY(${date.week * 100}%)` }}
+						/>
 					</div>
 				</div>
 			</Modal>
@@ -126,4 +165,25 @@ const isLeapYear = (year: number) => !(year % 4) && (!!(year % 100) || !!(year %
 
 const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
-const getDaysInMonth = (month: number, year: number) => (month === 1 && isLeapYear(year) ? 29 : daysInMonth[month]);
+const getDaysInMonth = (month: number, year: number) => {
+	if (month < 0) {
+		const actualMonth = 12 + month;
+		return actualMonth === 1 && isLeapYear(year - 1) ? 29 : daysInMonth[actualMonth];
+	}
+	return month === 1 && isLeapYear(year) ? 29 : daysInMonth[month];
+};
+
+const monthNames = [
+	'January', //1
+	'February', //2
+	'March', //3
+	'April', //4
+	'May', //5
+	'June', //6
+	'July', //7
+	'August', //8
+	'September', //9
+	'October', //10
+	'November', //11
+	'December', //12
+];

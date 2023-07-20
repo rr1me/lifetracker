@@ -1,6 +1,13 @@
 import s from './Week.module.scss';
+import { useGetMonthQuery } from '../../../redux/api/eventApi';
+import { IScheduleSlice } from '../../../redux/slices/scheduleSlice';
+import { useSelector } from 'react-redux';
 
 const Week = () => {
+	const { date } = useSelector((state: { scheduleSlice: IScheduleSlice }) => state.scheduleSlice);
+	const { data, error, isLoading, isFetching } = useGetMonthQuery(`${date.year}.${date.month}`);
+	console.log(data, error, isLoading, isFetching);
+
 	return (
 		<div className={s.week}>
 			<div className={s.timeRange}>
