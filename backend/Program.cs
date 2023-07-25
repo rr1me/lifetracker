@@ -1,8 +1,11 @@
 using System.Runtime.InteropServices.JavaScript;
+using backend.Db;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+
+builder.Services.AddDbContext<DatabaseContext>();
 
 var app = builder.Build();
 
@@ -13,6 +16,11 @@ app.UseHttpsRedirection();
 app.UseCors(b => b.AllowAnyOrigin());
 
 app.MapControllers();
+
+
+var db = app.Services.CreateScope().ServiceProvider.GetRequiredService<DatabaseContext>();
+db.Database.EnsureCreated();
+db.SaveChanges();
 
 app.Use(async (context, next) =>
 {
