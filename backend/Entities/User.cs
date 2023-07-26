@@ -9,5 +9,10 @@ public class User
     public string Password { get; set; }
     public bool Confirmed { get; set; }
     
-    public ICollection<Day> Days { get; set; }
+    public ICollection<Day>? Days { get; set; }
+
+    public User()
+    {
+        Confirmed = false;
+    }
 }
