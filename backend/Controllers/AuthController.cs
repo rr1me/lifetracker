@@ -3,6 +3,7 @@ using backend.Db;
 using backend.Email;
 using backend.Entities;
 using backend.JWT;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers;
@@ -36,7 +37,7 @@ public class AuthController : ControllerBase
         var user = new User
         {
             Email = userCreds.Email,
-            Password = CryptPass(userCreds.Password)
+            Password = BCrypt.Net.BCrypt.HashPassword(userCreds.Password)
         };
 
         _postgresContext.Users.Add(user);
@@ -49,17 +50,17 @@ public class AuthController : ControllerBase
     public IActionResult Confirmation(string JWT)
     {
         var decodeStatus = _jwtOrchestrator.TryDecodeToken(JWT, out var payload);
-        
+
         if (decodeStatus == DecodeStatus.invalid)
             return BadRequest("Invalid link");
-        
+
         var email = payload["email"].ToString();
 
         if (decodeStatus == DecodeStatus.expired)
         {
-            return !_emailOrchestrator.Send(email)
-                ? StatusCode(520, "Link was expired. Intercepting problems with sending new one. Try again later") //todo make some defence mechanism that prevents using old links multiple times
-                : StatusCode(408, "That link is expired. New one is already sent");
+            return _emailOrchestrator.Send(email)
+                ? StatusCode(408, "That link is expired. New one is already sent")
+                : StatusCode(520, "Link was expired. We're getting problems with sending new one. Try again later");
         }
 
         var user = _postgresContext.Users.First(x => x.Email == email);
@@ -74,7 +75,30 @@ public class AuthController : ControllerBase
         return Ok("Confirmed");
     }
 
-    private string CryptPass(string pass) => BCrypt.Net.BCrypt.HashPassword(pass);
+    [HttpPost("/resend")]
+    public IActionResult Resend([FromBody] string email, string password, string? newEmail)
+    {
+        var user = _postgresContext.Users.FirstOrDefault(x => x.Email == email);
+        if (user == null || user.Confirmed || user.Password != password)
+            return StatusCode(410, "Unable to find unconfirmed email or password is wrong");
+        
+        if (newEmail == null)
+            return _emailOrchestrator.Send(email)
+                ? Ok("New link was sent")
+                : StatusCode(520, "We're getting problems with sending you a new link. Try again later");
+
+        if (!new EmailAddressAttribute().IsValid(newEmail)) return StatusCode(406, "New email is invalid");
+
+        var sent = _emailOrchestrator.Send(newEmail);
+            
+        if (!sent) return StatusCode(520, "We're getting problems with sending you a new link. Try again later");
+            
+        user.Email = newEmail;
+        _postgresContext.Users.Update(user);
+        _postgresContext.SaveChanges();
+
+        return Ok("Your email was changed and we've sent you new confirmation message");
+    }
 }
 
 public class UserCreds

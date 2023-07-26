@@ -28,7 +28,7 @@ public class EmailOrchestrator
             ApplicationName = "Web client 1"
         });
 
-        var message = "Use this link to confirm your email: http://localhost:7121/confirm/" + _jwtOrchestrator.GenerateJwtForConfirmationLink(to);
+        var message = "Use this link to confirm your email: https://localhost:7121/confirm/" + _jwtOrchestrator.GenerateJwtForConfirmationLink(to);
 
         try
         {
