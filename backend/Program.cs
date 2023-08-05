@@ -37,9 +37,9 @@ app.UseCors(b => b.AllowAnyOrigin());
 app.MapControllers();
 
 
-// var serviceProvider = app.Services.CreateScope().ServiceProvider;
-// var db = serviceProvider.GetRequiredService<PostgresContext>();
-// db.Database.EnsureCreated();
+var serviceProvider = app.Services.CreateScope().ServiceProvider;
+var db = serviceProvider.GetRequiredService<PostgresContext>();
+db.Database.EnsureCreated();
 
 // var user = new User
 // {

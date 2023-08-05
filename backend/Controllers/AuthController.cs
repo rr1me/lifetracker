@@ -4,6 +4,7 @@ using backend.Db;
 using backend.Email;
 using backend.Entities;
 using backend.JWT;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -53,14 +54,14 @@ public class AuthController : ControllerBase
     [HttpGet("/confirm/{JWT}")]
     public IActionResult Confirmation(string JWT)
     {
-        var decodeStatus = _jwtOrchestrator.TryDecodeToken(JWT, out var payload);
+        var decodeStatus = _jwtOrchestrator.TryDecodeToken(JWT, out var payload, TokenType.ConfirmLink);
 
-        if (decodeStatus == DecodeStatus.invalid)
+        if (decodeStatus == DecodeStatus.Invalid)
             return BadRequest("Invalid link");
 
         var email = payload["email"].ToString();
 
-        if (decodeStatus == DecodeStatus.expired)
+        if (decodeStatus == DecodeStatus.Expired)
         {
             return _emailOrchestrator.Send(email)
                 ? StatusCode(408, "That link is expired. New one is already sent")
@@ -80,24 +81,24 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("/resend")]
-    public IActionResult Resend([FromBody] string email, string password, string? newEmail)
+    public IActionResult Resend([FromBody] UserCreds userCreds)
     {
-        var user = _postgresContext.Users.FirstOrDefault(x => x.Email == email);
-        if (user == null || user.Confirmed || user.Password != password)
+        var user = _postgresContext.Users.FirstOrDefault(x => x.Email == userCreds.Email);
+        if (user == null || user.Confirmed || !VerifyPass(userCreds.Password, user.Password))
             return StatusCode(410, "Unable to find unconfirmed email or password is wrong");
 
-        if (newEmail == null)
-            return _emailOrchestrator.Send(email)
+        if (userCreds.NewEmail == null)
+            return _emailOrchestrator.Send(userCreds.Email)
                 ? Ok("New link was sent")
                 : StatusCode(520, "We're getting problems with sending you a new link. Try again later");
 
-        if (!new EmailAddressAttribute().IsValid(newEmail)) return StatusCode(406, "New email is invalid");
+        if (!new EmailAddressAttribute().IsValid(userCreds.NewEmail)) return StatusCode(406, "New email is invalid");
 
-        var sent = _emailOrchestrator.Send(newEmail);
+        var sent = _emailOrchestrator.Send(userCreds.NewEmail);
 
         if (!sent) return StatusCode(520, "We're getting problems with sending you a new link. Try again later");
 
-        user.Email = newEmail;
+        user.Email = userCreds.NewEmail;
         _postgresContext.Users.Update(user);
         _postgresContext.SaveChanges();
 
@@ -108,23 +109,23 @@ public class AuthController : ControllerBase
     public IActionResult Login([FromBody] UserCreds userCreds)
     {
         var user = _postgresContext.Users.FirstOrDefault(x => x.Email == userCreds.Email);
-        if (user == null || user.Confirmed || user.Password != userCreds.Password)
+        if (user is not { Confirmed: true } || !VerifyPass(userCreds.Password, user.Password))
             return Unauthorized("Wrong email or password");
 
         TokenCookieHandler(true, user, out var accessExpiration);
         var refreshToken = TokenCookieHandler(false, user, out var refreshExpiration);
-        
-        _redisContext.SetValue(user.Email + ":" + refreshToken, user.Role.ToString(), refreshExpiration);
-        
+
+        _redisContext.SetValue(user.Email + ":" + refreshToken, user.Role.ToString(), refreshExpiration.UtcDateTime);
+
         if (!_redisContext.KeyExist(user.Email)) _redisContext.SetValue(user.Email, user.Role.ToString());
-        
+
         return Ok("Successful singIn");
     }
 
-    private string TokenCookieHandler(bool isAccess, User user, out DateTime expiration)
+    private string TokenCookieHandler(bool isAccess, User user, out DateTimeOffset expiration)
     {
         var token = _jwtOrchestrator.GenerateAuthToken(isAccess, user, out expiration);
-        
+
         var options = new CookieOptions
         {
             SameSite = SameSiteMode.Strict,
@@ -140,7 +141,7 @@ public class AuthController : ControllerBase
     {
         if (!HttpContext.Request.Cookies.ContainsKey("refreshToken"))
             return StatusCode(410, "Unable to logout, no cookie");
-        
+
         HttpContext.Response.Cookies.Delete("refreshToken");
 
         return Ok("Successful logout");
@@ -179,16 +180,29 @@ public class AuthController : ControllerBase
     // }
 
     [HttpGet("/token")]
+    [Authorize]
     public IActionResult GetKeys()
     {
         _jwtOrchestrator.GetCustomESToken(out var pub, out var priv);
 
         return Ok(pub + " | " + priv);
     }
+
+    [HttpPost("/role")]
+    [Authorize]
+    public IActionResult SetRole([FromBody]UserCreds userCreds)
+    {
+        var value = _redisContext.GetValue(userCreds.Email);
+        _redisContext.SetValue(userCreds.Email, value == "Admin" ? "User" : "Admin");
+        return Ok("not " + value);
+    }
+
+    private bool VerifyPass(string hash, string password) => BCrypt.Net.BCrypt.Verify(hash, password);
 }
 
 public class UserCreds
 {
     public string Email { get; set; }
     public string Password { get; set; }
+    public string? NewEmail { get; set; }
 }

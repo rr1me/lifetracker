@@ -27,30 +27,30 @@ public class AuthMiddleware : AuthenticationHandler<AuthScheme>
 
     protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
     {
-        if (!Request.Cookies.TryGetValue("refreshToken", out var refreshToken))
+        if (!Request.Cookies.TryGetValue("refresh_token", out var refreshToken))
             return AuthenticateResult.Fail("No refresh token");
 
-        if (_jwtOrchestrator.TryDecodeToken(refreshToken, out var refreshTokenPayload) != DecodeStatus.success)
+        if (_jwtOrchestrator.TryDecodeToken(refreshToken, out var refreshTokenPayload, TokenType.Refresh) != DecodeStatus.Success)
             return AuthenticateResult.Fail("Invalid refresh token");
 
         var email = refreshTokenPayload["email"].ToString();
         var realRole = _redisContext.GetValue(email);
 
 
-        if (!Request.Cookies.TryGetValue("accessToken", out var accessToken) ||
-            _jwtOrchestrator.TryDecodeToken(accessToken, out var accessTokenPayload) != DecodeStatus.success ||
+        if (!Request.Cookies.TryGetValue("access_token", out var accessToken) ||
+            _jwtOrchestrator.TryDecodeToken(accessToken, out var accessTokenPayload, TokenType.Access) != DecodeStatus.Success ||
             accessTokenPayload["role"].ToString() != realRole)
         {
             var newAccessToken =
                 _jwtOrchestrator.GenerateAccessToken(email, Enum.Parse<Roles>(realRole), out var expiration);
             Response.Cookies.Append("access_token", newAccessToken, new CookieOptions
             {
-                Expires = expiration,
+                Expires = DateTimeOffset.FromUnixTimeSeconds(expiration),
                 SameSite = SameSiteMode.Strict
             });
         }
 
-        var refreshTokenExpiration = DateTime.Parse(refreshTokenPayload["exp"].ToString());
+        var refreshTokenExpiration = DateTimeOffset.FromUnixTimeSeconds(long.Parse(refreshTokenPayload["exp"].ToString()));
 
         if (refreshTokenExpiration < DateTime.Now.AddDays(3))
         {
@@ -62,7 +62,7 @@ public class AuthMiddleware : AuthenticationHandler<AuthScheme>
             {
                 HttpOnly = true,
                 SameSite = SameSiteMode.Strict,
-                Expires = newRefreshTokenExpiration
+                Expires = DateTimeOffset.FromUnixTimeSeconds(newRefreshTokenExpiration)
             });
         }
         

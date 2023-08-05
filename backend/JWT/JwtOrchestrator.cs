@@ -28,17 +28,24 @@ public class JwtOrchestrator
     public string GenerateJwtForConfirmationLink(string email)
     {
         return JwtBuilder.Create().WithAlgorithm(confirmationLinksAlgorithm)
-            .AddClaim("exp", DateTime.Now.AddHours(24))
+            .AddClaim("exp", DateTimeOffset.UtcNow.AddHours(24).ToUnixTimeSeconds())
             .AddClaim("email", email)
             .MustVerifySignature()
             .Encode();
         ;
     }
 
-    public DecodeStatus TryDecodeToken(string token, out IDictionary<string, object> payload)
+    public DecodeStatus TryDecodeToken(string token, out IDictionary<string, object> payload, TokenType tokenType)
     {
+        var algorithm = tokenType switch
+        {
+            TokenType.Access => accessTokenAlgorithm,
+            TokenType.Refresh => refreshTokenAlgorithm,
+            TokenType.ConfirmLink => confirmationLinksAlgorithm
+        };
+
         var jwtDecoder = JwtBuilder.Create()
-            .WithAlgorithm(confirmationLinksAlgorithm)
+            .WithAlgorithm(algorithm)
             .MustVerifySignature();
         try
         {
@@ -53,14 +60,14 @@ public class JwtOrchestrator
             {
                 payload = jwtDecoder.WithValidationParameters(x => x.ValidateExpirationTime = false)
                     .Decode<IDictionary<string, object>>(token);
-                return DecodeStatus.expired;
+                return DecodeStatus.Expired;
             }
 
             payload = null;
-            return DecodeStatus.invalid;
+            return DecodeStatus.Invalid;
         }
 
-        return DecodeStatus.success;
+        return DecodeStatus.Success;
     }
 
     private ES256Algorithm GenerateES256Algorithm(string sectionName)
@@ -85,9 +92,9 @@ public class JwtOrchestrator
         priv = ecDsa.ExportECPrivateKeyPem();
     }
 
-    public string GenerateAccessToken(string email, Roles role, out DateTime expiration)
+    public string GenerateAccessToken(string email, Roles role, out long expiration)
     {
-        expiration = DateTime.Now.AddMinutes(5);
+        expiration = DateTimeOffset.UtcNow.AddMinutes(5).ToUnixTimeSeconds();
         return JwtBuilder.Create().WithAlgorithm(accessTokenAlgorithm)
             .AddClaim("exp", expiration)
             .AddClaim("email", email)
@@ -96,9 +103,9 @@ public class JwtOrchestrator
             .Encode();
     }
 
-    public string GenerateRefreshToken(string email, out DateTime expiration)
+    public string GenerateRefreshToken(string email, out long expiration)
     {
-        expiration = DateTime.Now.AddDays(14);
+        expiration = DateTimeOffset.UtcNow.AddDays(14).ToUnixTimeSeconds();
         return JwtBuilder.Create().WithAlgorithm(refreshTokenAlgorithm)
             .AddClaim("exp", expiration)
             .AddClaim("email", email)
@@ -106,11 +113,11 @@ public class JwtOrchestrator
             .Encode();
     }
 
-    public string GenerateAuthToken(bool isAccess, User user, out DateTime expiration)
+    public string GenerateAuthToken(bool isAccess, User user, out DateTimeOffset expiration)
     {
-        expiration = isAccess ? DateTime.Now.AddMinutes(5) : DateTime.Now.AddDays(14);
+        expiration = isAccess ? DateTimeOffset.UtcNow.AddMinutes(5) : DateTimeOffset.UtcNow.AddDays(14);
         var builder = JwtBuilder.Create().WithAlgorithm(isAccess ? accessTokenAlgorithm : refreshTokenAlgorithm)
-            .AddClaim("exp", expiration)
+            .AddClaim("exp", expiration.ToUnixTimeSeconds())
             .AddClaim("email", user.Email)
             .MustVerifySignature();
 
@@ -122,7 +129,14 @@ public class JwtOrchestrator
 
 public enum DecodeStatus
 {
-    success,
-    expired,
-    invalid
+    Success,
+    Expired,
+    Invalid
+}
+
+public enum TokenType
+{
+    Access,
+    Refresh,
+    ConfirmLink
 }
