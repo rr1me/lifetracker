@@ -1,8 +1,10 @@
 using System.Runtime.InteropServices.JavaScript;
+using backend.Auth;
 using backend.Db;
 using backend.Email;
 using backend.Entities;
 using backend.JWT;
+using Microsoft.Extensions.Hosting.Internal;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,20 +18,28 @@ builder.Services.AddSingleton<RedisContext>();
 builder.Services.AddSingleton<EmailOrchestrator>();
 builder.Services.AddSingleton<JwtOrchestrator>();
 
+builder.Services.AddAuthentication().AddScheme<AuthScheme, AuthMiddleware>("AuthScheme", null);
+builder.Services.AddAuthorization(x =>
+{
+    x.AddPolicy("Admin", p => p.RequireRole("Admin"));
+    x.AddPolicy("User", p => p.RequireRole("User"));
+});
+
 var app = builder.Build();
 
 app.UseHttpsRedirection();
 
-// app.UseAuthorization();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseCors(b => b.AllowAnyOrigin());
 
 app.MapControllers();
 
 
-var serviceProvider = app.Services.CreateScope().ServiceProvider;
-var db = serviceProvider.GetRequiredService<PostgresContext>();
-db.Database.EnsureCreated();
+// var serviceProvider = app.Services.CreateScope().ServiceProvider;
+// var db = serviceProvider.GetRequiredService<PostgresContext>();
+// db.Database.EnsureCreated();
 
 // var user = new User
 // {
@@ -48,10 +58,10 @@ db.Database.EnsureCreated();
 // };
 // db.Days.Add(day);
 
-db.SaveChanges();
+// db.SaveChanges();
 
-// var redisContext = serviceProvider.GetService<RedisContext>();
-// redisContext.TryItOn();
+var redisContext = app.Services.GetService<RedisContext>();
+app.Lifetime.ApplicationStopped.Register(redisContext.CloseConnection);
 
 app.Use(async (context, next) =>
 {
