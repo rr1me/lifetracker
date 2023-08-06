@@ -30,7 +30,8 @@ public class AuthMiddleware : AuthenticationHandler<AuthScheme>
         if (!Request.Cookies.TryGetValue("refresh_token", out var refreshToken))
             return AuthenticateResult.Fail("No refresh token");
 
-        if (_jwtOrchestrator.TryDecodeToken(refreshToken, out var refreshTokenPayload, TokenType.Refresh) != DecodeStatus.Success)
+        if (_jwtOrchestrator.TryDecodeToken(refreshToken, out var refreshTokenPayload, TokenType.Refresh) !=
+            DecodeStatus.Success)
             return AuthenticateResult.Fail("Invalid refresh token");
 
         var email = refreshTokenPayload["email"].ToString();
@@ -38,40 +39,42 @@ public class AuthMiddleware : AuthenticationHandler<AuthScheme>
 
 
         if (!Request.Cookies.TryGetValue("access_token", out var accessToken) ||
-            _jwtOrchestrator.TryDecodeToken(accessToken, out var accessTokenPayload, TokenType.Access) != DecodeStatus.Success ||
+            _jwtOrchestrator.TryDecodeToken(accessToken, out var accessTokenPayload, TokenType.Access) !=
+            DecodeStatus.Success ||
             accessTokenPayload["role"].ToString() != realRole)
         {
-            var newAccessToken =
-                _jwtOrchestrator.GenerateAccessToken(email, Enum.Parse<Roles>(realRole), out var expiration);
-            Response.Cookies.Append("access_token", newAccessToken, new CookieOptions
+            var newAccessResult = _jwtOrchestrator.GenerateAccessToken(email, realRole);
+
+            Response.Cookies.Append("access_token", newAccessResult.Token, new CookieOptions
             {
-                Expires = DateTimeOffset.FromUnixTimeSeconds(expiration),
+                Expires = DateTimeOffset.FromUnixTimeSeconds(newAccessResult.Expiration),
                 SameSite = SameSiteMode.Strict
             });
         }
 
-        var refreshTokenExpiration = DateTimeOffset.FromUnixTimeSeconds(long.Parse(refreshTokenPayload["exp"].ToString()));
+        var refreshTokenExpiration =
+            DateTimeOffset.FromUnixTimeSeconds(long.Parse(refreshTokenPayload["exp"].ToString()));
 
         if (refreshTokenExpiration < DateTime.Now.AddDays(3))
         {
             _redisContext.DeleteKey(email + ":" + refreshToken);
 
-            var newRefreshToken = _jwtOrchestrator.GenerateRefreshToken(email, out var newRefreshTokenExpiration);
-        
-            Response.Cookies.Append("refresh_token", newRefreshToken, new CookieOptions
+            var newRefreshResult = _jwtOrchestrator.GenerateRefreshToken(email);
+
+            Response.Cookies.Append("refresh_token", newRefreshResult.Token, new CookieOptions
             {
                 HttpOnly = true,
                 SameSite = SameSiteMode.Strict,
-                Expires = DateTimeOffset.FromUnixTimeSeconds(newRefreshTokenExpiration)
+                Expires = DateTimeOffset.FromUnixTimeSeconds(newRefreshResult.Expiration)
             });
         }
-        
+
         var claims = new[]
         {
             new Claim(ClaimTypes.Role, realRole)
         };
         var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(claims, "AuthScheme"));
-        
+
         return AuthenticateResult.Success(new AuthenticationTicket(claimsPrincipal, Scheme.Name));
     }
 }

@@ -25,24 +25,9 @@ public class JwtOrchestrator
         refreshTokenAlgorithm = GenerateES256Algorithm("ECKeysForRefreshToken");
     }
 
-    public string GenerateJwtForConfirmationLink(string email)
+    public DecodeStatus TryDecodeToken(string token, out IDictionary<string, object> payload, TokenType type)
     {
-        return JwtBuilder.Create().WithAlgorithm(confirmationLinksAlgorithm)
-            .AddClaim("exp", DateTimeOffset.UtcNow.AddHours(24).ToUnixTimeSeconds())
-            .AddClaim("email", email)
-            .MustVerifySignature()
-            .Encode();
-        ;
-    }
-
-    public DecodeStatus TryDecodeToken(string token, out IDictionary<string, object> payload, TokenType tokenType)
-    {
-        var algorithm = tokenType switch
-        {
-            TokenType.Access => accessTokenAlgorithm,
-            TokenType.Refresh => refreshTokenAlgorithm,
-            TokenType.ConfirmLink => confirmationLinksAlgorithm
-        };
+        var algorithm = GetAlgorithm(type);
 
         var jwtDecoder = JwtBuilder.Create()
             .WithAlgorithm(algorithm)
@@ -92,39 +77,99 @@ public class JwtOrchestrator
         priv = ecDsa.ExportECPrivateKeyPem();
     }
 
-    public string GenerateAccessToken(string email, Roles role, out long expiration)
+    // public string GenerateJwtForConfirmationLink(string email)
+    // {
+    //     return JwtBuilder.Create().WithAlgorithm(confirmationLinksAlgorithm)
+    //         .AddClaim("exp", DateTimeOffset.UtcNow.AddHours(24).ToUnixTimeSeconds())
+    //         .AddClaim("email", email)
+    //         .MustVerifySignature()
+    //         .Encode();
+    // }
+    //
+    // public string GenerateAccessToken(string email, Roles role, out long expiration)
+    // {
+    //     expiration = DateTimeOffset.UtcNow.AddMinutes(5).ToUnixTimeSeconds();
+    //     return JwtBuilder.Create().WithAlgorithm(accessTokenAlgorithm)
+    //         .AddClaim("exp", expiration)
+    //         .AddClaim("email", email)
+    //         .AddClaim("role", role)
+    //         .MustVerifySignature()
+    //         .Encode();
+    // }
+    //
+    // public string GenerateRefreshToken(string email, out long expiration)
+    // {
+    //     expiration = DateTimeOffset.UtcNow.AddDays(14).ToUnixTimeSeconds();
+    //     return JwtBuilder.Create().WithAlgorithm(refreshTokenAlgorithm)
+    //         .AddClaim("exp", expiration)
+    //         .AddClaim("email", email)
+    //         .MustVerifySignature()
+    //         .Encode();
+    // }
+
+    public GenerationResult GenerateJwtToken(IDictionary<string, object> claims, TokenType type)
     {
-        expiration = DateTimeOffset.UtcNow.AddMinutes(5).ToUnixTimeSeconds();
-        return JwtBuilder.Create().WithAlgorithm(accessTokenAlgorithm)
-            .AddClaim("exp", expiration)
-            .AddClaim("email", email)
-            .AddClaim("role", role)
-            .MustVerifySignature()
-            .Encode();
+        var algorithm = GetAlgorithm(type);
+        var expiration = GetExpirationDate(type);
+        var builder = JwtBuilder.Create().WithAlgorithm(algorithm).AddClaim("exp", expiration);
+        foreach (var claim in claims)
+        {
+            builder.AddClaim(claim.Key, claim.Value);
+        }
+
+        return new GenerationResult(builder.MustVerifySignature().Encode(), expiration);
     }
 
-    public string GenerateRefreshToken(string email, out long expiration)
+    public GenerationResult GenerateAccessToken(string email, string role) => GenerateJwtToken(
+        new Dictionary<string, object>
+        {
+            { "email", email },
+            { "role", Enum.Parse<Roles>(role) }
+        }, TokenType.Access);
+
+    public GenerationResult GenerateRefreshToken(string email) => GenerateJwtToken(new Dictionary<string, object>
     {
-        expiration = DateTimeOffset.UtcNow.AddDays(14).ToUnixTimeSeconds();
-        return JwtBuilder.Create().WithAlgorithm(refreshTokenAlgorithm)
-            .AddClaim("exp", expiration)
-            .AddClaim("email", email)
-            .MustVerifySignature()
-            .Encode();
+        { "email", email },
+    }, TokenType.Refresh);
+
+    public GenerationResult GenerateJwtForConfirmationLink(string email) => GenerateJwtToken(new Dictionary<string, object>
+    {
+        { "email", email }
+    }, TokenType.ConfirmLink);
+
+    private ES256Algorithm GetAlgorithm(TokenType type)
+    {
+        return type switch
+        {
+            TokenType.Access => accessTokenAlgorithm,
+            TokenType.Refresh => refreshTokenAlgorithm,
+            TokenType.ConfirmLink => confirmationLinksAlgorithm
+        };
     }
 
-    public string GenerateAuthToken(bool isAccess, User user, out DateTimeOffset expiration)
+    private long GetExpirationDate(TokenType type)
     {
-        expiration = isAccess ? DateTimeOffset.UtcNow.AddMinutes(5) : DateTimeOffset.UtcNow.AddDays(14);
-        var builder = JwtBuilder.Create().WithAlgorithm(isAccess ? accessTokenAlgorithm : refreshTokenAlgorithm)
-            .AddClaim("exp", expiration.ToUnixTimeSeconds())
-            .AddClaim("email", user.Email)
-            .MustVerifySignature();
-
-        if (isAccess) builder.AddClaim("role", user.Role);
-
-        return builder.Encode();
+        var offset = DateTimeOffset.UtcNow;
+        return type switch
+        {
+            TokenType.Access => offset.AddMinutes(5).ToUnixTimeSeconds(),
+            TokenType.Refresh => offset.AddDays(14).ToUnixTimeSeconds(),
+            TokenType.ConfirmLink => offset.AddDays(1).ToUnixTimeSeconds()
+        };
     }
+
+    // public string GenerateAuthToken(bool isAccess, User user, out DateTimeOffset expiration)
+    // {
+    //     expiration = isAccess ? DateTimeOffset.UtcNow.AddMinutes(5) : DateTimeOffset.UtcNow.AddDays(14);
+    //     var builder = JwtBuilder.Create().WithAlgorithm(isAccess ? accessTokenAlgorithm : refreshTokenAlgorithm)
+    //         .AddClaim("exp", expiration.ToUnixTimeSeconds())
+    //         .AddClaim("email", user.Email)
+    //         .MustVerifySignature();
+    //
+    //     if (isAccess) builder.AddClaim("role", user.Role);
+    //
+    //     return builder.Encode();
+    // }
 }
 
 public enum DecodeStatus
@@ -139,4 +184,16 @@ public enum TokenType
     Access,
     Refresh,
     ConfirmLink
+}
+
+public class GenerationResult
+{
+    public string Token { get; }
+    public long Expiration { get; }
+
+    public GenerationResult(string token, long expiration)
+    {
+        Token = token;
+        Expiration = expiration;
+    }
 }

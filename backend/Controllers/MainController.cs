@@ -1,6 +1,4 @@
-﻿using System.Net.Mail;
-using System.Text;
-using System.Text.Unicode;
+﻿using System.Text;
 using backend.Entities;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Gmail.v1;

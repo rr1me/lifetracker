@@ -1,10 +1,7 @@
-using System.Runtime.InteropServices.JavaScript;
 using backend.Auth;
 using backend.Db;
 using backend.Email;
-using backend.Entities;
 using backend.JWT;
-using Microsoft.Extensions.Hosting.Internal;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +14,8 @@ builder.Services.AddSingleton<RedisContext>();
 
 builder.Services.AddSingleton<EmailOrchestrator>();
 builder.Services.AddSingleton<JwtOrchestrator>();
+
+builder.Services.AddSingleton<AuthService>();
 
 builder.Services.AddAuthentication().AddScheme<AuthScheme, AuthMiddleware>("AuthScheme", null);
 builder.Services.AddAuthorization(x =>
