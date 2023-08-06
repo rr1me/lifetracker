@@ -8,15 +8,15 @@ namespace backend.Auth;
 
 public class AuthService
 {
-    private readonly PostgresContext _postgresContext;
+    private readonly IServiceProvider _serviceProvider;
     private readonly RedisContext _redisContext;
     private readonly JwtOrchestrator _jwtOrchestrator;
     private readonly EmailOrchestrator _emailOrchestrator;
 
-    public AuthService(PostgresContext postgresContext, RedisContext redisContext, JwtOrchestrator jwtOrchestrator,
+    public AuthService(IServiceProvider serviceProvider, RedisContext redisContext, JwtOrchestrator jwtOrchestrator,
         EmailOrchestrator emailOrchestrator)
     {
-        _postgresContext = postgresContext;
+        _serviceProvider = serviceProvider;
         _redisContext = redisContext;
         _jwtOrchestrator = jwtOrchestrator;
         _emailOrchestrator = emailOrchestrator;
@@ -26,8 +26,10 @@ public class AuthService
     {
         if (!new EmailAddressAttribute().IsValid(userCreds.Email))
             return new ApiResult(406, "Invalid email");
+        
+        var postgresContext = GetPostgresContext();
 
-        if (_postgresContext.Users.Any(x => x.Email == userCreds.Email))
+        if (postgresContext.Users.Any(x => x.Email == userCreds.Email))
             return new ApiResult(409, "There's already a user with that email");
 
         if (!_emailOrchestrator.Send(userCreds.Email))
@@ -40,8 +42,8 @@ public class AuthService
             Role = Roles.User
         };
 
-        _postgresContext.Users.Add(user);
-        _postgresContext.SaveChanges();
+        postgresContext.Users.Add(user);
+        postgresContext.SaveChanges();
 
         return new ApiResult(200, "Registered: " + user.Email);
     }
@@ -62,21 +64,25 @@ public class AuthService
                 : new ApiResult(520, "Link was expired. We're getting problems with sending new one. Try again later");
         }
 
-        var user = _postgresContext.Users.First(x => x.Email == email);
+        var postgresContext = GetPostgresContext();
+        
+        var user = postgresContext.Users.First(x => x.Email == email);
 
         if (user.Confirmed)
             return new ApiResult(406, "Already confirmed");
 
         user.Confirmed = true;
-        _postgresContext.Users.Update(user);
-        _postgresContext.SaveChanges();
+        postgresContext.Users.Update(user);
+        postgresContext.SaveChanges();
 
         return new ApiResult(200, "Confirmed");
     }
 
     public ApiResult Resend(UserCreds userCreds)
     {
-        var user = _postgresContext.Users.FirstOrDefault(x => x.Email == userCreds.Email);
+        var postgresContext = GetPostgresContext();
+        
+        var user = postgresContext.Users.FirstOrDefault(x => x.Email == userCreds.Email);
         if (user == null || user.Confirmed || !VerifyPass(userCreds.Password, user.Password))
             return new ApiResult(410, "Unable to find unconfirmed email or password is wrong");
 
@@ -92,15 +98,17 @@ public class AuthService
         if (!sent) return new ApiResult(520, "We're getting problems with sending you a new link. Try again later");
 
         user.Email = userCreds.NewEmail;
-        _postgresContext.Users.Update(user);
-        _postgresContext.SaveChanges();
+        postgresContext.Users.Update(user);
+        postgresContext.SaveChanges();
 
         return new ApiResult(200, "Your email was changed and we've sent you new confirmation message");
     }
 
     public ApiResult Login(UserCreds userCreds, HttpResponse response)
     {
-        var user = _postgresContext.Users.FirstOrDefault(x => x.Email == userCreds.Email);
+        var postgresContext = GetPostgresContext();
+        
+        var user = postgresContext.Users.FirstOrDefault(x => x.Email == userCreds.Email);
         if (user is not { Confirmed: true } || !VerifyPass(userCreds.Password, user.Password))
             return new ApiResult(401, "Wrong email or password");
 
@@ -147,6 +155,8 @@ public class AuthService
     }
 
     private bool VerifyPass(string hash, string password) => BCrypt.Net.BCrypt.Verify(hash, password);
+
+    private PostgresContext GetPostgresContext() => _serviceProvider.CreateScope().ServiceProvider.GetRequiredService<PostgresContext>();
 }
 
 public class UserCreds

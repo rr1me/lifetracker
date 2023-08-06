@@ -1,7 +1,6 @@
 ﻿using System.Security.Claims;
 using System.Text.Encodings.Web;
 using backend.Db;
-using backend.Entities;
 using backend.JWT;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;

@@ -77,36 +77,6 @@ public class JwtOrchestrator
         priv = ecDsa.ExportECPrivateKeyPem();
     }
 
-    // public string GenerateJwtForConfirmationLink(string email)
-    // {
-    //     return JwtBuilder.Create().WithAlgorithm(confirmationLinksAlgorithm)
-    //         .AddClaim("exp", DateTimeOffset.UtcNow.AddHours(24).ToUnixTimeSeconds())
-    //         .AddClaim("email", email)
-    //         .MustVerifySignature()
-    //         .Encode();
-    // }
-    //
-    // public string GenerateAccessToken(string email, Roles role, out long expiration)
-    // {
-    //     expiration = DateTimeOffset.UtcNow.AddMinutes(5).ToUnixTimeSeconds();
-    //     return JwtBuilder.Create().WithAlgorithm(accessTokenAlgorithm)
-    //         .AddClaim("exp", expiration)
-    //         .AddClaim("email", email)
-    //         .AddClaim("role", role)
-    //         .MustVerifySignature()
-    //         .Encode();
-    // }
-    //
-    // public string GenerateRefreshToken(string email, out long expiration)
-    // {
-    //     expiration = DateTimeOffset.UtcNow.AddDays(14).ToUnixTimeSeconds();
-    //     return JwtBuilder.Create().WithAlgorithm(refreshTokenAlgorithm)
-    //         .AddClaim("exp", expiration)
-    //         .AddClaim("email", email)
-    //         .MustVerifySignature()
-    //         .Encode();
-    // }
-
     public GenerationResult GenerateJwtToken(IDictionary<string, object> claims, TokenType type)
     {
         var algorithm = GetAlgorithm(type);
@@ -132,10 +102,11 @@ public class JwtOrchestrator
         { "email", email },
     }, TokenType.Refresh);
 
-    public GenerationResult GenerateJwtForConfirmationLink(string email) => GenerateJwtToken(new Dictionary<string, object>
-    {
-        { "email", email }
-    }, TokenType.ConfirmLink);
+    public GenerationResult GenerateJwtForConfirmationLink(string email) => GenerateJwtToken(
+        new Dictionary<string, object>
+        {
+            { "email", email }
+        }, TokenType.ConfirmLink);
 
     private ES256Algorithm GetAlgorithm(TokenType type)
     {
@@ -156,44 +127,5 @@ public class JwtOrchestrator
             TokenType.Refresh => offset.AddDays(14).ToUnixTimeSeconds(),
             TokenType.ConfirmLink => offset.AddDays(1).ToUnixTimeSeconds()
         };
-    }
-
-    // public string GenerateAuthToken(bool isAccess, User user, out DateTimeOffset expiration)
-    // {
-    //     expiration = isAccess ? DateTimeOffset.UtcNow.AddMinutes(5) : DateTimeOffset.UtcNow.AddDays(14);
-    //     var builder = JwtBuilder.Create().WithAlgorithm(isAccess ? accessTokenAlgorithm : refreshTokenAlgorithm)
-    //         .AddClaim("exp", expiration.ToUnixTimeSeconds())
-    //         .AddClaim("email", user.Email)
-    //         .MustVerifySignature();
-    //
-    //     if (isAccess) builder.AddClaim("role", user.Role);
-    //
-    //     return builder.Encode();
-    // }
-}
-
-public enum DecodeStatus
-{
-    Success,
-    Expired,
-    Invalid
-}
-
-public enum TokenType
-{
-    Access,
-    Refresh,
-    ConfirmLink
-}
-
-public class GenerationResult
-{
-    public string Token { get; }
-    public long Expiration { get; }
-
-    public GenerationResult(string token, long expiration)
-    {
-        Token = token;
-        Expiration = expiration;
     }
 }

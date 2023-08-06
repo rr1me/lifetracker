@@ -7,8 +7,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-// builder.Services.AddLogging();
-
 builder.Services.AddDbContext<PostgresContext>();
 builder.Services.AddSingleton<RedisContext>();
 
