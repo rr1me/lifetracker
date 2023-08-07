@@ -69,7 +69,7 @@
 
 .chosenWeek{
   background: linear-gradient(135deg, rgba(75, 74, 74, 0.50) 0%, rgba(0, 0, 0, 0.50) 71.35%, rgba(183, 19, 19, 0.50) 100%);
-  border-radius: 5px;
+  border-radius: v.$b_radius;
   width: 210px;
   height: 25px;
   position: absolute;

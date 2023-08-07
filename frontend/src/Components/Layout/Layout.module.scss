@@ -1,6 +1,37 @@
-.content{
-  height: 5013px;
+.layout {
+  //background: linear-gradient(22deg, rgba(87, 255, 9, 0.13) 0%, rgba(0, 0, 0, 0.00) 100%), linear-gradient(210deg, rgba(0, 200, 188, 0.25) 0%, rgba(0, 0, 0, 0.00) 22.92%), linear-gradient(207deg, #494949 0%, #2C2C2C 20.83%, #262626 44.79%, #0A0A0A 100%);
+  min-width: max-content;
+  display: flex;
+  flex-direction: column;
 
-  width: 1440px;
+  height: 100%;
+}
+
+.baseColor{
+  background: radial-gradient(177.98% 65.86% at 0.00% 100.00%, rgba(25, 159, 13, 0.09) 0%, rgba(0, 0, 0, 0.00) 100%), radial-gradient(141.51% 111.80% at 100.00% 0.00%, rgba(0, 255, 240, 0.25) 0%, rgba(0, 129, 121, 0.16) 13.55%, rgba(1, 64, 60, 0.10) 24.77%, rgba(0, 32, 30, 0.00) 42.74%, rgba(0, 0, 0, 0.00) 51.04%), radial-gradient(481.65% 150.94% at 100.00% -0.00%, #313131 0%, #050505 85.94%, #000 100%);
+}
+
+.auth{
+  background: radial-gradient(65.04% 85.20% at 50.00% 49.95%, rgba(0, 189, 164, 0.24) 0%, rgba(0, 0, 0, 0.35) 91%), radial-gradient(223.46% 128.89% at 100.00% -0.00%, rgba(255, 255, 255, 0.31) 0%, rgba(255, 255, 255, 0.06) 39.99%, rgba(0, 0, 0, 0.00) 80.84%), #0D0D0D;
+}
+
+.inner {
+
+  //background: radial-gradient(77.47% 22.05% at 0% 33.96%, rgba(87, 255, 9, 0.13) 0%,
+  //        rgba(0, 0, 0, 0) 100%) /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */, linear-gradient(190.68deg, rgba(0, 200, 188, 0.25) 0%, rgba(0, 0, 0, 0) 6.04%),
+  //linear-gradient(194.54deg, #494949 -3.37%, #2C2C2C 5.26%, #262626 15.18%, #0A0A0A 38.03%);
+
+  //background-color: #0e0e0e;
+  flex: 1;
+  min-height: max-content;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  //height: 5013px;
+  max-width: 1440px;
   margin-inline: auto;
+  //height: max-content;
+  flex: 1;
 }

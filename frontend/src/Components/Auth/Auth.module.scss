@@ -1,0 +1,167 @@
+@use '../../vars' as v;
+
+.auth{
+  height: 100%;
+
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  //text-align: center;
+  //gap: 10px;
+  font-size: 20px;
+
+  transition: 250ms;
+  width: 300px;
+}
+
+.wide{
+  width: 300px;
+}
+
+.buttonRow{
+  //display: flex;
+  //gap: 5px;
+  //justify-content: center;
+}
+
+.buttons{
+  display: flex;
+  gap: 5px;
+  position: relative;
+  width: min-content;
+  transition: 250ms;
+}
+
+.button{
+  @include v.button;
+  font: v.$HelveticaNeueCyr;
+  font-size: 16px;
+  width: max-content;
+  align-self: flex-end;
+  transition: 250ms;
+}
+
+.input{
+  font: v.$HelveticaNeueCyr;
+  font-size: 16px;
+  border-radius: v.$b_radius;
+  border: 1px solid v.$c_border;
+
+  padding: 11px 15px;
+  opacity: 1;
+  //background-color: white;
+  transition: 250ms;
+  //height: 50px;
+}
+
+.inputTransparent{
+  opacity: 0;
+  transition: 250ms;
+  //user-select: none;
+  pointer-events: none;
+}
+
+.inputZone{
+  //position: absolute;
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  gap: 15px;
+  //opacity: 0;
+  transition: 350ms;
+  height: 0
+}
+
+.inputDummy{
+  transition: 250ms;
+  height: 0;
+}
+
+//.interactiveSpaceDummy{
+//  transition: 250ms;
+//  height: 0;
+//}
+
+
+.title{
+  display: flex;
+  //justify-content: center;
+  //margin-inline: auto;
+
+  transition: 250ms;
+  //width: 100%;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.actualTitle{
+  transition: 250ms;
+  position: relative;
+  width: min-content;
+  //text-align: center;
+  //width: 0px;
+  //transform: translateX(50%);
+}
+//
+//.actualTitle{
+//  flex: 1;
+//  max-width: fit-content;
+//}
+//
+//.titleDummy{
+//  flex: 0;
+//  transition: 250ms;
+//}
+//
+//.hovered{
+//  flex: auto;
+//}
+
+
+.uiSelector{
+  transition: 250ms;
+  position: relative;
+  font-size: 13px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.uiSelectorTransparent{
+  opacity: 0;
+  pointer-events: none;
+  transition: 250ms;
+}
+
+.interactiveSpace{
+  display: flex;
+  flex-direction: column;
+  //gap: 20px;
+  transition: 250ms;
+}
+
+.selectorUnderline{
+  position: absolute;
+  height: 3px;
+  border-radius: v.$b_radius;
+  background-color: v.$c_accent;
+  width: 15px;
+
+  left: 0;
+  bottom: -2px;
+  opacity: 0;
+  transition: 250ms;
+}
+
+//.uiSelectorButton{
+//  text-decoration: none;
+//  background-image: linear-gradient(currentColor, currentColor);
+//  background-position: 0% 100%;
+//  background-repeat: no-repeat;
+//  background-size: 0% 2px;
+//  transition: background-size .3s;
+//}
+//
+//.uiSelectorButton:hover{
+//  background-size: 100% 2px;
+//}

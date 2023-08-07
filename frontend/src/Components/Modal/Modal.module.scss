@@ -7,7 +7,7 @@
 
   z-index: 1;
 
-  border-radius: 5px;
+  border-radius: v.$b_radius;
   background: rgba(0, 0, 0, 0.20);
   backdrop-filter: blur(7.5px);
 }

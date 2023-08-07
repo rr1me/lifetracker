@@ -1,0 +1,18 @@
+@use "./vars" as v;
+
+.App {
+    /*background: black;*/
+    /*background: radial-gradient(77.47% 22.05% at 0% 33.96%, rgba(87, 255, 9, 0.13) 0%,*/
+    /*rgba(0, 0, 0, 0) 100%) !* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected *!, linear-gradient(190.68deg, rgba(0, 200, 188, 0.25) 0%, rgba(0, 0, 0, 0) 6.04%),*/
+    /*linear-gradient(194.54deg, #494949 -3.37%, #2C2C2C 5.26%, #262626 15.18%, #0A0A0A 38.03%);*/
+
+    color: white;
+
+    font: v.$Helvetica;
+
+    /*min-width: 1440px;*/
+}
+
+svg{
+    display: block;
+}
