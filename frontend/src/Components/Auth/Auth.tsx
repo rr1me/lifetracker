@@ -1,5 +1,6 @@
 import s from './Auth.module.scss';
 import { useLayoutEffect, useRef, useState } from 'react';
+import LabeledInput from '../LabeledInput/LabeledInput';
 
 const Auth = () => {
 	const [uiState, setUiState] = useState<uiStates>(0); // 0 = buttons, 1 = login, 2 = register
@@ -55,7 +56,7 @@ const Auth = () => {
 			selectorUnderlineRef.current.style.opacity = '1';
 
 			const inputRect = inputZoneRef.current.children[0].getBoundingClientRect();
-			inputZoneRef.current.style.height = inputRect.height*(uiState+1) + 15*uiState + 10 + 'px';
+			inputZoneRef.current.style.height = inputRect.height * (uiState + 1) + 15 * uiState + 10 + 'px';
 		}
 		if (uiState === 1) {
 			const loginButtonRect = loginButtonRef.current.getBoundingClientRect();
@@ -66,7 +67,7 @@ const Auth = () => {
 			const loginSelectorButtonRect = loginSelectorButtonRef.current.getBoundingClientRect();
 
 			selectorUnderlineRef.current.style.left = underlinePadding + 'px';
-			selectorUnderlineRef.current.style.width = loginSelectorButtonRect.width - underlinePadding*2 + 'px'
+			selectorUnderlineRef.current.style.width = loginSelectorButtonRect.width - underlinePadding * 2 + 'px';
 		}
 		if (uiState === 2) {
 			buttonsRef.current.style.left = buttonRowRect.width - buttonsRect.width + 'px';
@@ -76,7 +77,7 @@ const Auth = () => {
 			const loginSelectorButtonRect = loginSelectorButtonRef.current.getBoundingClientRect();
 			const singupSelectorButtonRect = singupSelectorButtonRef.current.getBoundingClientRect();
 			selectorUnderlineRef.current.style.left = loginSelectorButtonRect.width + 10 + underlinePadding + 'px';
-			selectorUnderlineRef.current.style.width = singupSelectorButtonRect.width - underlinePadding*2 + 'px'
+			selectorUnderlineRef.current.style.width = singupSelectorButtonRect.width - underlinePadding * 2 + 'px';
 		}
 	}, [uiState]);
 
@@ -100,10 +101,11 @@ const Auth = () => {
 			</div>
 
 			<div className={s.inputZone} ref={inputZoneRef}>
-				<input aria-label={'email'} type={'text'}
-					   className={s.input + (uiState === 0 ? ' ' + s.inputTransparent : '')} />
-				<input type={'text'} className={s.input + (uiState === 0 ? ' ' + s.inputTransparent : '')} />
-				<input type={'text'} className={s.input + (uiState !== 2 ? ' ' + s.inputTransparent : '')} />
+				<LabeledInput className={s.input + (uiState === 0 ? ' ' + s.inputTransparent : '')} label={'Email'} labelWidth={16.8} offset={2}/>
+				<LabeledInput className={s.input + (uiState === 0 ? ' ' + s.inputTransparent : '')} label={'Password'} labelWidth={20} offset ={4}/>
+				<LabeledInput className={s.input + (uiState !== 2 ? ' ' + s.inputTransparent : '')} label={'Confirm password'} labelWidth={37} offset={15}/>
+				{/*<input type={'text'} className={s.input + (uiState === 0 ? ' ' + s.inputTransparent : '')} />*/}
+				{/*<input type={'text'} className={s.input + (uiState !== 2 ? ' ' + s.inputTransparent : '')} />*/}
 			</div>
 
 			<div ref={buttonRowRef}>

@@ -11,6 +11,7 @@ $transition: 250ms;
   font-size: 20px;
 
   transition: $transition;
+  width: 300px;
 }
 
 .buttons{
@@ -25,6 +26,7 @@ $transition: 250ms;
   @include v.button;
   font: v.$HelveticaNeueCyr;
   font-size: 16px;
+
   width: max-content;
   align-self: flex-end;
   transition: $transition;
@@ -33,6 +35,7 @@ $transition: 250ms;
 .input{
   font: v.$HelveticaNeueCyr;
   font-size: 16px;
+
   border-radius: v.$b_radius;
   border: 1px solid v.$c_border;
 
@@ -50,7 +53,6 @@ $transition: 250ms;
 .inputZone{
   display: flex;
   flex-direction: column;
-  width: 300px;
   gap: 15px;
   transition: 350ms;
   height: 0
@@ -78,7 +80,7 @@ $transition: 250ms;
 .uiSelector{
   transition: $transition;
   position: relative;
-  font-size: 13px;
+  font-size: 12px;
   display: flex;
   justify-content: center;
   gap: 10px;
