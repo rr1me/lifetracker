@@ -21,13 +21,19 @@ const Auth = () => {
 
 	useLayoutEffect(() => {
 		if (
-			titleRef.current === null || actualTitleRef.current === null || uiSelectorRef.current === null
-			|| inputZoneRef.current === null
-			|| buttonRowRef.current === null || buttonsRef.current === null
-			|| loginButtonRef.current === null || singupButtonRef.current === null
-			|| selectorUnderlineRef.current === null || loginSelectorButtonRef.current === null || singupSelectorButtonRef.current === null) {
+			titleRef.current === null ||
+			actualTitleRef.current === null ||
+			uiSelectorRef.current === null ||
+			inputZoneRef.current === null ||
+			buttonRowRef.current === null ||
+			buttonsRef.current === null ||
+			loginButtonRef.current === null ||
+			singupButtonRef.current === null ||
+			selectorUnderlineRef.current === null ||
+			loginSelectorButtonRef.current === null ||
+			singupSelectorButtonRef.current === null
+		)
 			return;
-		}
 
 		const titleRect = titleRef.current.getBoundingClientRect();
 		const actualTitleRect = actualTitleRef.current.getBoundingClientRect();
@@ -84,39 +90,58 @@ const Auth = () => {
 	return (
 		<div className={s.auth}>
 			<div className={s.title} ref={titleRef}>
-				<div className={s.actualTitle} ref={actualTitleRef}>LifeTracker</div>
+				<div className={s.actualTitle} ref={actualTitleRef}>
+					LifeTracker
+				</div>
 
-				<div className={s.uiSelector + (uiState === 0 ? ' ' + s.uiSelectorTransparent : '')}
-					 ref={uiSelectorRef}>
+				<div className={s.uiSelector + (uiState === 0 ? ' ' + s.uiSelectorTransparent : '')} ref={uiSelectorRef}>
 					<div className={s.selectorUnderline} ref={selectorUnderlineRef} />
-					<button className={s.uiSelectorButton} ref={loginSelectorButtonRef} onClick={() => {
-						setUiState(1);
-					}}>Log in
+					<button
+						className={s.uiSelectorButton}
+						ref={loginSelectorButtonRef}
+						onClick={() => {
+							setUiState(1);
+						}}
+					>
+						Log in
 					</button>
-					<button className={s.uiSelectorButton} ref={singupSelectorButtonRef} onClick={() => {
-						setUiState(2);
-					}}>Sign up
+					<button
+						className={s.uiSelectorButton}
+						ref={singupSelectorButtonRef}
+						onClick={() => {
+							setUiState(2);
+						}}
+					>
+						Sign up
 					</button>
 				</div>
 			</div>
 
 			<div className={s.inputZone} ref={inputZoneRef}>
-				<LabeledInput className={s.input + (uiState === 0 ? ' ' + s.inputTransparent : '')} label={'Email'} labelWidth={16.8} offset={2}/>
-				<LabeledInput className={s.input + (uiState === 0 ? ' ' + s.inputTransparent : '')} label={'Password'} labelWidth={20} offset ={4}/>
-				<LabeledInput className={s.input + (uiState !== 2 ? ' ' + s.inputTransparent : '')} label={'Confirm password'} labelWidth={37} offset={15}/>
-				{/*<input type={'text'} className={s.input + (uiState === 0 ? ' ' + s.inputTransparent : '')} />*/}
-				{/*<input type={'text'} className={s.input + (uiState !== 2 ? ' ' + s.inputTransparent : '')} />*/}
+				<LabeledInput className={s.input + (uiState === 0 ? ' ' + s.inputTransparent : '')} label={'Email'} labelWidth={16.8} offset={2} />
+				<LabeledInput className={s.input + (uiState === 0 ? ' ' + s.inputTransparent : '')} label={'Password'} labelWidth={20} offset={4} />
+				<LabeledInput className={s.input + (uiState !== 2 ? ' ' + s.inputTransparent : '')} label={'Confirm password'} labelWidth={37} offset={15} />
 			</div>
 
 			<div ref={buttonRowRef}>
 				<div className={s.buttons} ref={buttonsRef}>
-					<button className={s.button} ref={loginButtonRef} onClick={() => {
-						setUiState(1);
-					}}>Log in
+					<button
+						className={s.button}
+						ref={loginButtonRef}
+						onClick={() => {
+							setUiState(1);
+						}}
+					>
+						Log in
 					</button>
-					<button className={s.button} ref={singupButtonRef} onClick={() => {
-						setUiState(2);
-					}}>Sign up
+					<button
+						className={s.button}
+						ref={singupButtonRef}
+						onClick={() => {
+							setUiState(2);
+						}}
+					>
+						Sign up
 					</button>
 				</div>
 			</div>
