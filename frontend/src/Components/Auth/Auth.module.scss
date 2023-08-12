@@ -11,7 +11,7 @@ $transition: 250ms;
   font-size: 20px;
 
   transition: $transition;
-  width: 300px;
+  //width: 300px;
 }
 
 .buttons{
@@ -45,7 +45,7 @@ $transition: 250ms;
   pointer-events: none;
 }
 
-.inputTransparent{
+.inputShowed{
   opacity: 1;
   pointer-events: all;
 }
@@ -54,7 +54,7 @@ $transition: 250ms;
   display: flex;
   flex-direction: column;
   gap: 15px;
-  transition: 350ms;
+  transition: $transition; // was 350
   height: 0
 }
 
@@ -103,4 +103,39 @@ $transition: 250ms;
   bottom: -2px;
   opacity: 0;
   transition: $transition;
+}
+
+.help{
+  display: block;
+  height: 0;
+  width: 0;
+  white-space: nowrap;
+  font-size: 12px;
+  color: v.$c_dark !important;
+  cursor: pointer;
+  opacity: 0;
+  transition: $transition;
+}
+
+.slider{
+  display: flex;
+  gap: 10px;
+  width: 300px;
+  overflow: hidden;
+  position: relative;
+  height: 100%;
+  align-items: center;
+}
+
+.main{
+  width: 300px;
+  position: absolute;
+  transform: translateX(0);
+  transition: 350ms;
+}
+
+.new {
+  width: 300px;
+  transform: translateX(105%);
+  transition: 350ms;
 }

@@ -1,7 +1,7 @@
 import s from './Auth.module.scss';
 import { useLayoutEffect, useRef, useState } from 'react';
 import LabeledInput from '../LabeledInput/LabeledInput';
-import { Simulate } from 'react-dom/test-utils';
+import { Link } from 'react-router-dom';
 
 const Auth = () => {
 	const [uiState, setUiState] = useState<uiStates>(0); // 0 = buttons, 1 = login, 2 = register
@@ -19,6 +19,8 @@ const Auth = () => {
 	const selectorUnderlineRef = useRef<HTMLDivElement>(null);
 	const loginSelectorButtonRef = useRef<HTMLButtonElement>(null);
 	const singupSelectorButtonRef = useRef<HTMLButtonElement>(null);
+
+	const helpRef = useRef<HTMLAnchorElement>(null);
 
 	useLayoutEffect(() => {
 		if (
@@ -62,8 +64,9 @@ const Auth = () => {
 
 			selectorUnderlineRef.current.style.opacity = '1';
 
+			const inputShowed = s.input + ' ' + s.inputShowed;
 			(async () => {
-				if (isInitial) await delay(250);
+				if (isInitial) await delay(300);
 
 				const inputRect = inputZoneRef.current!.children[0].getBoundingClientRect();
 				inputZoneRef.current!.style.height = inputRect.height * (uiState + 1) + 15 * uiState + 10 + 'px';
@@ -71,9 +74,11 @@ const Auth = () => {
 				if (!isInitial) return;
 
 				const inputs = inputZoneRef.current!.children
-				inputs[0].className = s.input + ' ' + s.inputTransparent
+				inputs[0].className = inputShowed
 				await delay(50)
-				inputs[1].className = s.input + ' ' + s.inputTransparent
+				inputs[1].className = inputShowed
+				if (uiState === 2) await delay(50);
+				helpRef.current!.style.opacity = '1';
 			})()
 
 			if (uiState === 1) {
@@ -101,8 +106,8 @@ const Auth = () => {
 				selectorUnderlineRef.current.style.width = singupSelectorButtonRect.width - underlinePadding * 2 + 'px';
 
 				(async () => {
-					if (isInitial) await delay(350);
-					inputZoneRef.current!.children[2].className = s.input + ' ' + s.inputTransparent;
+					if (isInitial) await delay(400);
+					inputZoneRef.current!.children[2].className = inputShowed;
 				})()
 			}
 		}
@@ -110,60 +115,69 @@ const Auth = () => {
 
 	return (
 		<div className={s.auth}>
-			<div className={s.title} ref={titleRef}>
-				<div className={s.actualTitle} ref={actualTitleRef}>
-					LifeTracker
+			<div className={s.slider}>
+				<div className={s.main}>
+					<div className={s.title} ref={titleRef}>
+						<div className={s.actualTitle} ref={actualTitleRef}>
+							LifeTracker
+						</div>
+
+						<div className={s.uiSelector + (uiState === 0 ? ' ' + s.uiSelectorTransparent : '')} ref={uiSelectorRef}>
+							<div className={s.selectorUnderline} ref={selectorUnderlineRef} />
+							<button
+								className={s.uiSelectorButton}
+								ref={loginSelectorButtonRef}
+								onClick={() => {
+									setUiState(1);
+								}}
+							>
+								Log in
+							</button>
+							<button
+								className={s.uiSelectorButton}
+								ref={singupSelectorButtonRef}
+								onClick={() => {
+									setUiState(2);
+								}}
+							>
+								Sign up
+							</button>
+						</div>
+					</div>
+
+					<div className={s.inputZone} ref={inputZoneRef}>
+						<LabeledInput className={s.input} label={'Email'} labelWidth={16.8} offset={2} />
+						<LabeledInput className={s.input} label={'Password'} labelWidth={20} offset={4} />
+						<LabeledInput className={s.input} label={'Confirm password'} labelWidth={37} offset={15} />
+					</div>
+
+					<div className={s.submitZone} ref={buttonRowRef}>
+						<Link to={'/auth/help'} className={s.help} ref={helpRef}>I need help</Link>
+						<div className={s.buttons} ref={buttonsRef}>
+							<button
+								className={s.button}
+								ref={loginButtonRef}
+								onClick={() => {
+									setUiState(1);
+								}}
+							>
+								Log in
+							</button>
+							<button
+								className={s.button}
+								ref={singupButtonRef}
+								onClick={() => {
+									setUiState(2);
+								}}
+							>
+								Sign up
+							</button>
+						</div>
+					</div>
 				</div>
 
-				<div className={s.uiSelector + (uiState === 0 ? ' ' + s.uiSelectorTransparent : '')} ref={uiSelectorRef}>
-					<div className={s.selectorUnderline} ref={selectorUnderlineRef} />
-					<button
-						className={s.uiSelectorButton}
-						ref={loginSelectorButtonRef}
-						onClick={() => {
-							setUiState(1);
-						}}
-					>
-						Log in
-					</button>
-					<button
-						className={s.uiSelectorButton}
-						ref={singupSelectorButtonRef}
-						onClick={() => {
-							setUiState(2);
-						}}
-					>
-						Sign up
-					</button>
-				</div>
-			</div>
-
-			<div className={s.inputZone} ref={inputZoneRef}>
-				<LabeledInput className={s.input} label={'Email'} labelWidth={16.8} offset={2} />
-				<LabeledInput className={s.input} label={'Password'} labelWidth={20} offset={4} />
-				<LabeledInput className={s.input} label={'Confirm password'} labelWidth={37} offset={15} />
-			</div>
-
-			<div ref={buttonRowRef}>
-				<div className={s.buttons} ref={buttonsRef}>
-					<button
-						className={s.button}
-						ref={loginButtonRef}
-						onClick={() => {
-							setUiState(1);
-						}}
-					>
-						Log in
-					</button>
-					<button
-						className={s.button}
-						ref={singupButtonRef}
-						onClick={() => {
-							setUiState(2);
-						}}
-					>
-						Sign up
-					</button>
+				<div className={s.new}>
+					second
 				</div>
 			</div>
 		</div>
