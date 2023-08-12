@@ -6,6 +6,6 @@ type userCreds = {
 	password: string
 };
 
-const singup = (userCreds: userCreds) => axios.post(process.env.API+'/register', userCreds);
+// const singup = (userCreds: userCreds) => axios.post(process.env.API+'/register', userCreds);
 
-export default {singup};
+// export default {singup};

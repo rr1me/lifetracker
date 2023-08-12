@@ -19,7 +19,7 @@ $transition: 250ms;
   gap: 5px;
   position: relative;
   width: min-content;
-  transition: $transition;
+  transition: 300ms;
 }
 
 .button{
@@ -40,14 +40,14 @@ $transition: 250ms;
   border: 1px solid v.$c_border;
 
   padding: 11px 15px;
-  opacity: 1;
-  transition: $transition;
-}
-
-.inputTransparent{
   opacity: 0;
   transition: $transition;
   pointer-events: none;
+}
+
+.inputTransparent{
+  opacity: 1;
+  pointer-events: all;
 }
 
 .inputZone{

@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
-import authRequests from '../../requests/authRequests';
+// import authRequests from '../../requests/authRequests';
 
 export type authData = {
 	email: string,
@@ -12,13 +12,13 @@ enum role{
 	user
 }
 
-const singupThunk = createAsyncThunk(
-	'auth-singup',
-	async ({username, password}:{username: string, password: string}) => {
-		const r = authRequests.singup({username, password});
-
-	}
-)
+// const singupThunk = createAsyncThunk(
+// 	'auth-singup',
+// 	async ({username, password}:{username: string, password: string}) => {
+// 		const r = authRequests.singup({username, password});
+//
+// 	}
+// )
 
 const authSlice = createSlice({
 	name: 'auth',

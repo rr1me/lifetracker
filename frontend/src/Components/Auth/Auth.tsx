@@ -1,6 +1,7 @@
 import s from './Auth.module.scss';
 import { useLayoutEffect, useRef, useState } from 'react';
 import LabeledInput from '../LabeledInput/LabeledInput';
+import { Simulate } from 'react-dom/test-utils';
 
 const Auth = () => {
 	const [uiState, setUiState] = useState<uiStates>(0); // 0 = buttons, 1 = login, 2 = register
@@ -54,36 +55,56 @@ const Auth = () => {
 		buttonsRef.current.style.left = buttonRowMiddle - buttonsMiddle + 'px';
 		const underlinePadding = 3;
 
+		const isInitial = inputZoneRef.current.style.height === '';
 		if (uiState !== 0) {
 			actualTitleRef.current.style.left = '0';
 			uiSelectorRef.current.style.right = '0';
-			inputZoneRef.current.style.opacity = '1';
 
 			selectorUnderlineRef.current.style.opacity = '1';
 
-			const inputRect = inputZoneRef.current.children[0].getBoundingClientRect();
-			inputZoneRef.current.style.height = inputRect.height * (uiState + 1) + 15 * uiState + 10 + 'px';
-		}
-		if (uiState === 1) {
-			const loginButtonRect = loginButtonRef.current.getBoundingClientRect();
-			buttonsRef.current.style.left = buttonRowRect.width - loginButtonRect.width + 'px';
-			singupButtonRef.current.style.opacity = '0';
-			loginButtonRef.current.style.opacity = '1';
+			(async () => {
+				if (isInitial) await delay(250);
 
-			const loginSelectorButtonRect = loginSelectorButtonRef.current.getBoundingClientRect();
+				const inputRect = inputZoneRef.current!.children[0].getBoundingClientRect();
+				inputZoneRef.current!.style.height = inputRect.height * (uiState + 1) + 15 * uiState + 10 + 'px';
 
-			selectorUnderlineRef.current.style.left = underlinePadding + 'px';
-			selectorUnderlineRef.current.style.width = loginSelectorButtonRect.width - underlinePadding * 2 + 'px';
-		}
-		if (uiState === 2) {
-			buttonsRef.current.style.left = buttonRowRect.width - buttonsRect.width + 'px';
-			loginButtonRef.current.style.opacity = '0';
-			singupButtonRef.current.style.opacity = '1';
+				if (!isInitial) return;
 
-			const loginSelectorButtonRect = loginSelectorButtonRef.current.getBoundingClientRect();
-			const singupSelectorButtonRect = singupSelectorButtonRef.current.getBoundingClientRect();
-			selectorUnderlineRef.current.style.left = loginSelectorButtonRect.width + 10 + underlinePadding + 'px';
-			selectorUnderlineRef.current.style.width = singupSelectorButtonRect.width - underlinePadding * 2 + 'px';
+				const inputs = inputZoneRef.current!.children
+				inputs[0].className = s.input + ' ' + s.inputTransparent
+				await delay(50)
+				inputs[1].className = s.input + ' ' + s.inputTransparent
+			})()
+
+			if (uiState === 1) {
+				const loginButtonRect = loginButtonRef.current.getBoundingClientRect();
+				buttonsRef.current.style.left = buttonRowRect.width - loginButtonRect.width + 'px';
+				singupButtonRef.current.style.opacity = '0';
+				loginButtonRef.current.style.opacity = '1';
+
+				const loginSelectorButtonRect = loginSelectorButtonRef.current.getBoundingClientRect();
+
+				selectorUnderlineRef.current.style.left = underlinePadding + 'px';
+				selectorUnderlineRef.current.style.width = loginSelectorButtonRect.width - underlinePadding * 2 + 'px';
+
+				const inputZoneChildren = inputZoneRef.current.children;
+				if (inputZoneChildren[0].className !== s.input) inputZoneChildren[2].className = s.input;
+			}
+			else if (uiState === 2) {
+				buttonsRef.current.style.left = buttonRowRect.width - buttonsRect.width + 'px';
+				loginButtonRef.current.style.opacity = '0';
+				singupButtonRef.current.style.opacity = '1';
+
+				const loginSelectorButtonRect = loginSelectorButtonRef.current.getBoundingClientRect();
+				const singupSelectorButtonRect = singupSelectorButtonRef.current.getBoundingClientRect();
+				selectorUnderlineRef.current.style.left = loginSelectorButtonRect.width + 10 + underlinePadding + 'px';
+				selectorUnderlineRef.current.style.width = singupSelectorButtonRect.width - underlinePadding * 2 + 'px';
+
+				(async () => {
+					if (isInitial) await delay(350);
+					inputZoneRef.current!.children[2].className = s.input + ' ' + s.inputTransparent;
+				})()
+			}
 		}
 	}, [uiState]);
 
@@ -118,9 +139,9 @@ const Auth = () => {
 			</div>
 
 			<div className={s.inputZone} ref={inputZoneRef}>
-				<LabeledInput className={s.input + (uiState === 0 ? ' ' + s.inputTransparent : '')} label={'Email'} labelWidth={16.8} offset={2} />
-				<LabeledInput className={s.input + (uiState === 0 ? ' ' + s.inputTransparent : '')} label={'Password'} labelWidth={20} offset={4} />
-				<LabeledInput className={s.input + (uiState !== 2 ? ' ' + s.inputTransparent : '')} label={'Confirm password'} labelWidth={37} offset={15} />
+				<LabeledInput className={s.input} label={'Email'} labelWidth={16.8} offset={2} />
+				<LabeledInput className={s.input} label={'Password'} labelWidth={20} offset={4} />
+				<LabeledInput className={s.input} label={'Confirm password'} labelWidth={37} offset={15} />
 			</div>
 
 			<div ref={buttonRowRef}>
@@ -150,5 +171,7 @@ const Auth = () => {
 };
 
 type uiStates = 0 | 1 | 2;
+
+const delay = (t: number) => new Promise(x=>setTimeout(x, t));
 
 export default Auth;
