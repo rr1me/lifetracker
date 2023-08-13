@@ -1,8 +1,9 @@
 import React from 'react';
 import './App.scss';
 import Layout from './Components/Layout/Layout';
-import Auth from './Components/Auth/Auth';
+// import Index from './Components/Auth';
 import { BrowserRouter } from 'react-router-dom';
+import Auth from './Components/Auth';
 
 function App() {
 	return (
@@ -10,7 +11,8 @@ function App() {
 			<BrowserRouter>
 				<Layout />
 			</BrowserRouter>
-			{/*<Auth/>*/}
+
+			{/*<Index/>*/}
 		</div>
 	);
 }

@@ -1,0 +1,33 @@
+@use '../../../../vars' as v;
+@use "../../authVars" as av;
+
+.input{
+  font: v.$HelveticaNeueCyr;
+  font-size: 16px;
+
+  border-radius: v.$b_radius;
+  border: 1px solid v.$c_border;
+
+  padding: 11px 15px;
+  opacity: 0;
+  transition: av.$transition;
+  pointer-events: none;
+}
+
+.inputShowed{
+  opacity: 1;
+  pointer-events: all;
+}
+
+.inputZone{
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  transition: av.$transition; // was 350
+  height: 0
+}
+
+.inputDummy{
+  transition: av.$transition;
+  height: 0;
+}

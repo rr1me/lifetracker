@@ -33,7 +33,8 @@
 		],
 		"no-duplicate-imports": "error",
 		"@typescript-eslint/no-empty-function": "off",
-		"no-debugger": "warn"
+		"no-debugger": "warn",
+		"react/prop-types": "off"
 	},
 	"settings": {
 		"import/resolver": {

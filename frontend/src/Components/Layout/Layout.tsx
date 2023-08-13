@@ -5,7 +5,7 @@ import Schedule from '../Schedule/Schedule';
 import { IScheduleSlice } from '../../redux/slices/scheduleSlice';
 import { useSelector } from 'react-redux';
 import { authData } from '../../redux/slices/authSlice';
-import Auth from '../Auth/Auth';
+import Index from '../Auth';
 import { useLayoutEffect } from 'react';
 
 const Layout = () => {
@@ -28,7 +28,7 @@ const Layout = () => {
 				{/*<Navbar />*/}
 				<div className={s.content}>
 					<Routes>
-						<Route path='/auth' element={<Auth />} />
+						<Route path='/auth' element={<Index />} />
 						<Route path='/schedule' element={<Schedule />} />
 					</Routes>
 				</div>

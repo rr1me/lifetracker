@@ -1,0 +1,44 @@
+@use '../../../../vars' as v;
+@use "../../authVars" as av;
+
+.title{
+  display: flex;
+
+  transition: av.$transition;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.actualTitle{
+  transition: av.$transition;
+  position: relative;
+  width: min-content;
+}
+
+.uiSelector{
+  transition: av.$transition;
+  position: relative;
+  font-size: 12px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.uiSelectorTransparent{
+  opacity: 0;
+  pointer-events: none;
+  transition: av.$transition;
+}
+
+.selectorUnderline{
+  position: absolute;
+  height: 3px;
+  border-radius: v.$b_radius;
+  background-color: v.$c_accent;
+  width: 15px;
+
+  left: 0;
+  bottom: -2px;
+  opacity: 0;
+  transition: av.$transition;
+}
