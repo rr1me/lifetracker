@@ -1,6 +1,6 @@
 import { Dispatch, JSX, ReactNode, RefObject, SetStateAction } from 'react';
 
-export type ZoneComponent = ({ uiState, isInitial }: { uiState: uiStates; isInitial: RefObject<boolean> }) => JSX.Element;
+export type ZoneComponent = ({ uiState, isInitial }: { uiState: uiStates; isInitial?: RefObject<boolean> }) => JSX.Element;
 export type InteractiveZoneComponent = ({
 	uiState,
 	setUiState,

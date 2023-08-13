@@ -4,7 +4,7 @@ import { useLayoutEffect, useRef } from 'react';
 import { delay } from '../AuthSlide';
 import { ZoneComponent } from '../../types';
 
-const InputZone: ZoneComponent = ({ uiState, isInitial }) => {
+const InputZone: ZoneComponent = ({ uiState }) => {
 	const inputZoneRef = useRef<HTMLDivElement>(null);
 
 	useLayoutEffect(() => {
@@ -12,8 +12,12 @@ const InputZone: ZoneComponent = ({ uiState, isInitial }) => {
 
 		if (uiState !== 0) {
 			const inputShowed = s.input + ' ' + s.inputShowed;
+
+			const isInitial = inputZoneRef.current.style.height === '';
 			(async () => {
-				if (isInitial) await delay(300);
+				if (isInitial) {
+					await delay(300);
+				}
 
 				const inputRect = inputZoneRef.current!.children[0].getBoundingClientRect();
 				inputZoneRef.current!.style.height = inputRect.height * (uiState + 1) + 15 * uiState + 10 + 'px';

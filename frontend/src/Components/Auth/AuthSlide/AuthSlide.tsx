@@ -16,7 +16,7 @@ const AuthSlide = ({ setSliderIndex }: {setSliderIndex: Dispatch<SetStateAction<
 	return (
 		<div className={s.auth}>
 			<TitleZone uiState={uiState} setUiState={setUiState} isInitial={isInitial}/>
-			<InputZone uiState={uiState} isInitial={isInitial}/>
+			<InputZone uiState={uiState}/>
 			<SubmitZone uiState={uiState} setUiState={setUiState} isInitial={isInitial} setSliderIndex={setSliderIndex}/>
 		</div>
 	);

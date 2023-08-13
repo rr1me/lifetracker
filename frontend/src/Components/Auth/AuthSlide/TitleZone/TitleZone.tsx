@@ -1,7 +1,6 @@
 import s from './TitleZone.module.scss';
-import { useLayoutEffect, useRef } from 'react';
-import { InteractiveZoneComponent, ZoneComponent } from '../../types';
-import { delay } from '../AuthSlide';
+import { useEffect, useLayoutEffect, useRef } from 'react';
+import { InteractiveZoneComponent } from '../../types';
 
 const underlinePadding = 3;
 
@@ -26,11 +25,15 @@ const TitleZone: InteractiveZoneComponent = ({ uiState, setUiState, isInitial })
 			return;
 
 		if (isInitial.current) {
-			const titleRect = titleRef.current.getBoundingClientRect();
+			// const titleRect = titleRef.current.getBoundingClientRect();
 			const actualTitleRect = actualTitleRef.current.getBoundingClientRect();
 
-			const titleMiddle = titleRect.width / 2;
+			// const titleMiddle = titleRect.width / 2;
+
+			const authWidth = document.getElementById('Auth')!.getBoundingClientRect().width;
+			const titleMiddle = authWidth / 2;
 			const actualTitleMiddle = actualTitleRect.width / 2;
+
 			actualTitleRef.current.style.left = titleMiddle - actualTitleMiddle + 'px';
 
 			const uiSelectorRect = uiSelectorRef.current.getBoundingClientRect();
@@ -54,6 +57,7 @@ const TitleZone: InteractiveZoneComponent = ({ uiState, setUiState, isInitial })
 			} else if (uiState === 2) {
 				const loginSelectorButtonRect = loginSelectorButtonRef.current.getBoundingClientRect();
 				const singupSelectorButtonRect = singupSelectorButtonRef.current.getBoundingClientRect();
+
 				selectorUnderlineRef.current.style.left = loginSelectorButtonRect.width + 10 + underlinePadding + 'px';
 				selectorUnderlineRef.current.style.width = singupSelectorButtonRect.width - underlinePadding * 2 + 'px';
 			}

@@ -18,7 +18,8 @@ const SubmitZone: InteractiveZoneComponent = ({ uiState, setUiState, isInitial, 
 		const buttonsRect = buttonsRef.current.getBoundingClientRect();
 
 		if (isInitial.current) {
-			const buttonRowMiddle = buttonRowRect.width / 2;
+			const authWidth = document.getElementById('Auth')!.getBoundingClientRect().width;
+			const buttonRowMiddle = authWidth / 2;
 			const buttonsMiddle = buttonsRect.width / 2;
 			buttonsRef.current.style.left = buttonRowMiddle - buttonsMiddle + 'px';
 
