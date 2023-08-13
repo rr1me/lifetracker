@@ -2,13 +2,8 @@
 @use "../../authVars" as av;
 
 .input {
-  font: v.$HelveticaNeueCyr;
-  font-size: 16px;
+  @include av.input;
 
-  border-radius: v.$b_radius;
-  border: 1px solid v.$c_border;
-
-  padding: 11px 15px;
   opacity: 0;
   transition: av.$transition;
   pointer-events: none;

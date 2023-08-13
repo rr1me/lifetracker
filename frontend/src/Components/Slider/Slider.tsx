@@ -13,7 +13,7 @@ const Slider = ({ children, index }: { children: ReactNode; index: number }) => 
 
 		setStyles({
 			main: { width: parentWidth },
-			list: { width: parentWidth * Children.count(children), transform: `translateX(-${index * parentWidth}px)` },
+			list: { width: parentWidth * Children.count(children), transform: `translateX(-${index * (parentWidth + 1)}px)` },
 		});
 	}, []);
 
@@ -27,6 +27,7 @@ const Slider = ({ children, index }: { children: ReactNode; index: number }) => 
 		<div className={s.slider} ref={sliderRef} style={styles.main}>
 			<div className={s.list} ref={listRef} style={styles.list}>
 				{Children.map(children, x => {
+					console.log(x);
 					return (
 						<div className={s.slide} style={styles.main}>
 							{x}

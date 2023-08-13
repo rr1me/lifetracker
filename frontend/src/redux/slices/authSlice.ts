@@ -1,15 +1,19 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { uiStates } from '../../Components/Auth/types';
 // import authRequests from '../../requests/authRequests';
 
-export type authData = {
-	email: string,
-	role: role
-}
+export type AuthData = {
+	email: string;
+	role: role;
+	authAnimState: uiStates;
+	slide: number;
+	helpChoice: number;
+};
 
-enum role{
+enum role {
 	admin,
-	user
+	user,
 }
 
 // const singupThunk = createAsyncThunk(
@@ -22,12 +26,19 @@ enum role{
 
 const authSlice = createSlice({
 	name: 'auth',
-	initialState: {
-	} as authData,
+	initialState: {} as AuthData,
 	reducers: {
-
-	}
-})
+		setAuthAnimState: (state, { payload }: { payload: uiStates }) => {
+			state.authAnimState = payload;
+		},
+		setSlide: (state, { payload }: { payload: number }) => {
+			state.slide = payload;
+		},
+		setHelpChoice: (state, { payload }: { payload: number }) => {
+			state.helpChoice = payload;
+		},
+	},
+});
 
 export default authSlice.reducer;
 export const actions = authSlice.actions;

@@ -8,6 +8,6 @@
   z-index: 1;
 
   border-radius: v.$b_radius;
-  background: rgba(0, 0, 0, 0.20);
+  background: v.$c_global;
   backdrop-filter: blur(7.5px);
 }

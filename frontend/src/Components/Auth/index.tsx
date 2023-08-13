@@ -2,18 +2,18 @@ import s from './index.module.scss';
 import Slider from '../Slider/Slider';
 import AuthSlide from './AuthSlide/AuthSlide';
 import { useState } from 'react';
+import HelpSlides from './HelpSlides/HelpSlides';
+import { AuthData } from '../../redux/slices/authSlice';
+import { useSelector } from 'react-redux';
 
 const AuthMain = () => {
-	const [sliderIndex, setSliderIndex] = useState(0);
+	const { slide } = useSelector((state: { authSlice: AuthData }) => state.authSlice);
 
 	return (
 		<div className={s.auth} id={'Auth'}>
-			<Slider index={sliderIndex}>
-				<AuthSlide setSliderIndex={setSliderIndex}/>
-				<div>
-					secondslide
-					<button onClick={()=>setSliderIndex(0)}>back</button>
-				</div>
+			<Slider index={slide}>
+				<AuthSlide />
+				<HelpSlides />
 			</Slider>
 		</div>
 	);

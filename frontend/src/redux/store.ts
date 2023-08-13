@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { eventApi } from './api/eventApi';
 import scheduleSlice from './slices/scheduleSlice';
-import authSlice, { authData } from './slices/authSlice';
+import authSlice, { AuthData } from './slices/authSlice';
 
-const storedAuthData = JSON.parse(localStorage.getItem('authData')!) as authData;
+const storedAuthData = JSON.parse(localStorage.getItem('authData')!) as AuthData;
 
 export const store = configureStore({
 	reducer: {
@@ -14,8 +14,11 @@ export const store = configureStore({
 	preloadedState: {
 		authSlice: {
 			email: storedAuthData?.email,
-			role: storedAuthData?.role
-		}
+			role: storedAuthData?.role,
+			authAnimState: 0,
+			slide: 0,
+			helpChoice: 0
+		} as AuthData
 	},
 	middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(eventApi.middleware)
 });

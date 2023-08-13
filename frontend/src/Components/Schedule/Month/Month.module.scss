@@ -12,10 +12,10 @@
   height: 134px;
   border-radius: 10px;
 
-  background: rgba(51, 51, 51, 0.35);
+  background: v.$c_main;
   background-blend-mode: lighten;
   border: 1px solid v.$c_border;
-  box-shadow: 0 0 9px rgba(0, 0, 0, 0.62);
+  box-shadow: v.$box_shadow;
 
   padding: 10px 10px;
 

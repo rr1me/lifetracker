@@ -1,10 +1,17 @@
 import s from './TitleZone.module.scss';
-import { useEffect, useLayoutEffect, useRef } from 'react';
-import { InteractiveZoneComponent } from '../../types';
+import { useLayoutEffect, useRef } from 'react';
+import { uiStates, ZoneComponent } from '../../types';
+import { actions, AuthData } from '../../../../redux/slices/authSlice';
+import { useDispatch, useSelector } from 'react-redux';
+
+const { setAuthAnimState } = actions;
 
 const underlinePadding = 3;
 
-const TitleZone: InteractiveZoneComponent = ({ uiState, setUiState, isInitial }) => {
+const TitleZone: ZoneComponent = ({ isInitial }) => {
+	const { authAnimState } = useSelector((state: { authSlice: AuthData }) => state.authSlice);
+	const dispatch = useDispatch();
+
 	const titleRef = useRef<HTMLDivElement>(null);
 	const actualTitleRef = useRef<HTMLDivElement>(null);
 	const uiSelectorRef = useRef<HTMLDivElement>(null);
@@ -43,18 +50,18 @@ const TitleZone: InteractiveZoneComponent = ({ uiState, setUiState, isInitial })
 			return;
 		}
 
-		if (uiState !== 0) {
+		if (authAnimState !== 0) {
 			actualTitleRef.current.style.left = '0';
 			uiSelectorRef.current.style.right = '0';
 
 			selectorUnderlineRef.current.style.opacity = '1';
 
-			if (uiState === 1) {
+			if (authAnimState === 1) {
 				const loginSelectorButtonRect = loginSelectorButtonRef.current.getBoundingClientRect();
 
 				selectorUnderlineRef.current.style.left = underlinePadding + 'px';
 				selectorUnderlineRef.current.style.width = loginSelectorButtonRect.width - underlinePadding * 2 + 'px';
-			} else if (uiState === 2) {
+			} else if (authAnimState === 2) {
 				const loginSelectorButtonRect = loginSelectorButtonRef.current.getBoundingClientRect();
 				const singupSelectorButtonRect = singupSelectorButtonRef.current.getBoundingClientRect();
 
@@ -62,7 +69,9 @@ const TitleZone: InteractiveZoneComponent = ({ uiState, setUiState, isInitial })
 				selectorUnderlineRef.current.style.width = singupSelectorButtonRect.width - underlinePadding * 2 + 'px';
 			}
 		}
-	}, [uiState]);
+	}, [authAnimState]);
+
+	const onSelectorButtonClick = (i: uiStates) => () => dispatch(setAuthAnimState(i));
 
 	return (
 		<div className={s.title} ref={titleRef}>
@@ -70,24 +79,12 @@ const TitleZone: InteractiveZoneComponent = ({ uiState, setUiState, isInitial })
 				LifeTracker
 			</div>
 
-			<div className={s.uiSelector + (uiState === 0 ? ' ' + s.uiSelectorTransparent : '')} ref={uiSelectorRef}>
+			<div className={s.uiSelector + (authAnimState === 0 ? ' ' + s.uiSelectorTransparent : '')} ref={uiSelectorRef}>
 				<div className={s.selectorUnderline} ref={selectorUnderlineRef} />
-				<button
-					className={s.uiSelectorButton}
-					ref={loginSelectorButtonRef}
-					onClick={() => {
-						setUiState(1);
-					}}
-				>
+				<button className={s.uiSelectorButton} ref={loginSelectorButtonRef} onClick={onSelectorButtonClick(1)}>
 					Log in
 				</button>
-				<button
-					className={s.uiSelectorButton}
-					ref={singupSelectorButtonRef}
-					onClick={() => {
-						setUiState(2);
-					}}
-				>
+				<button className={s.uiSelectorButton} ref={singupSelectorButtonRef} onClick={onSelectorButtonClick(2)}>
 					Sign up
 				</button>
 			</div>

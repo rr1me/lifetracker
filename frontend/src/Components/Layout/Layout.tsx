@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes, useLocation, useNavigate } from 'react-ro
 import Schedule from '../Schedule/Schedule';
 import { IScheduleSlice } from '../../redux/slices/scheduleSlice';
 import { useSelector } from 'react-redux';
-import { authData } from '../../redux/slices/authSlice';
+import { AuthData } from '../../redux/slices/authSlice';
 import Index from '../Auth';
 import { useLayoutEffect } from 'react';
 
@@ -12,7 +12,7 @@ const Layout = () => {
 	const location = useLocation();
 
 	const navigate = useNavigate();
-	const authData = useSelector((state: { authSlice: authData }) => state.authSlice);
+	const authData = useSelector((state: { authSlice: AuthData }) => state.authSlice);
 
 	const isInAuth = location.pathname != '/auth';
 

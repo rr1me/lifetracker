@@ -1,12 +1,13 @@
 import s from './AuthSlide.module.scss';
-import { Dispatch, SetStateAction, useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import InputZone from './InputZone/InputZone';
-import { uiStates } from '../types';
+import { Slide, uiStates } from '../types';
 import TitleZone from './TitleZone/TitleZone';
 import SubmitZone from './SubmitZone/SubmitZone';
+import { useSelector } from 'react-redux';
+import { AuthData } from '../../../redux/slices/authSlice';
 
-const AuthSlide = ({ setSliderIndex }: {setSliderIndex: Dispatch<SetStateAction<number>>}) => {
-	const [uiState, setUiState] = useState<uiStates>(0); // 0 = buttons, 1 = login, 2 = register
+const AuthSlide = () => {
 	const isInitial = useRef(true);
 
 	useLayoutEffect(() => {
@@ -15,9 +16,9 @@ const AuthSlide = ({ setSliderIndex }: {setSliderIndex: Dispatch<SetStateAction<
 
 	return (
 		<div className={s.auth}>
-			<TitleZone uiState={uiState} setUiState={setUiState} isInitial={isInitial}/>
-			<InputZone uiState={uiState}/>
-			<SubmitZone uiState={uiState} setUiState={setUiState} isInitial={isInitial} setSliderIndex={setSliderIndex}/>
+			<TitleZone isInitial={isInitial}/>
+			<InputZone />
+			<SubmitZone isInitial={isInitial}/>
 		</div>
 	);
 };

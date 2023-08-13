@@ -3,14 +3,17 @@ import LabeledInput from '../../../LabeledInput/LabeledInput';
 import { useLayoutEffect, useRef } from 'react';
 import { delay } from '../AuthSlide';
 import { ZoneComponent } from '../../types';
+import { AuthData } from '../../../../redux/slices/authSlice';
+import { useSelector } from 'react-redux';
 
-const InputZone: ZoneComponent = ({ uiState }) => {
+const InputZone = () => {
+	const { authAnimState } = useSelector((state: { authSlice: AuthData }) => state.authSlice);
 	const inputZoneRef = useRef<HTMLDivElement>(null);
 
 	useLayoutEffect(() => {
 		if (!inputZoneRef.current) return;
 
-		if (uiState !== 0) {
+		if (authAnimState !== 0) {
 			const inputShowed = s.input + ' ' + s.inputShowed;
 
 			const isInitial = inputZoneRef.current.style.height === '';
@@ -20,7 +23,7 @@ const InputZone: ZoneComponent = ({ uiState }) => {
 				}
 
 				const inputRect = inputZoneRef.current!.children[0].getBoundingClientRect();
-				inputZoneRef.current!.style.height = inputRect.height * (uiState + 1) + 15 * uiState + 10 + 'px';
+				inputZoneRef.current!.style.height = inputRect.height * (authAnimState + 1) + 15 * authAnimState + 10 + 'px';
 
 				if (!isInitial) return;
 
@@ -30,17 +33,17 @@ const InputZone: ZoneComponent = ({ uiState }) => {
 				inputs[1].className = inputShowed;
 			})();
 
-			if (uiState === 1) {
+			if (authAnimState === 1) {
 				const inputZoneChildren = inputZoneRef.current.children;
 				if (inputZoneChildren[0].className !== s.input) inputZoneChildren[2].className = s.input;
-			} else if (uiState === 2) {
+			} else if (authAnimState === 2) {
 				(async () => {
 					if (isInitial) await delay(400);
 					inputZoneRef.current!.children[2].className = inputShowed;
 				})();
 			}
 		}
-	}, [uiState]);
+	}, [authAnimState]);
 
 	return (
 		<div className={s.inputZone} ref={inputZoneRef}>
