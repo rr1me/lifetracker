@@ -2,14 +2,14 @@ import s from './InputZone.module.scss';
 import LabeledInput from '../../../LabeledInput/LabeledInput';
 import { useLayoutEffect, useRef } from 'react';
 import { delay } from '../AuthSlide';
-import { uiStates, ZoneComponent } from '../../types';
+import { ZoneComponent } from '../../types';
 
-const InputZone: ZoneComponent = ({ uiState }) => {
+const InputZone: ZoneComponent = ({ uiState, isInitial }) => {
 	const inputZoneRef = useRef<HTMLDivElement>(null);
 
 	useLayoutEffect(() => {
 		if (!inputZoneRef.current) return;
-		const isInitial = inputZoneRef.current.style.height === '';
+
 		if (uiState !== 0) {
 			const inputShowed = s.input + ' ' + s.inputShowed;
 			(async () => {

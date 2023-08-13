@@ -1,7 +1,7 @@
 @use '../../../../vars' as v;
 @use "../../authVars" as av;
 
-.input{
+.input {
   font: v.$HelveticaNeueCyr;
   font-size: 16px;
 
@@ -14,12 +14,12 @@
   pointer-events: none;
 }
 
-.inputShowed{
+.inputShowed {
   opacity: 1;
   pointer-events: all;
 }
 
-.inputZone{
+.inputZone {
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -27,7 +27,7 @@
   height: 0
 }
 
-.inputDummy{
+.inputDummy {
   transition: av.$transition;
   height: 0;
 }

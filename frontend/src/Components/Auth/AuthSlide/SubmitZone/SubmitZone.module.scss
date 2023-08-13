@@ -1,7 +1,7 @@
 @use '../../../../vars' as v;
 @use "../../authVars" as av;
 
-.buttons{
+.buttons {
   display: flex;
   gap: 5px;
   position: relative;
@@ -9,7 +9,7 @@
   transition: 300ms;
 }
 
-.button{
+.button {
   @include v.button;
   font: v.$HelveticaNeueCyr;
   font-size: 16px;
@@ -19,7 +19,7 @@
   transition: av.$transition;
 }
 
-.help{
+.help {
   display: block;
   height: 0;
   width: 0;
