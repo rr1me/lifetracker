@@ -2,7 +2,6 @@ import s from './InputZone.module.scss';
 import LabeledInput from '../../../LabeledInput/LabeledInput';
 import { useLayoutEffect, useRef } from 'react';
 import { delay } from '../AuthSlide';
-import { ZoneComponent } from '../../types';
 import { AuthData } from '../../../../redux/slices/authSlice';
 import { useSelector } from 'react-redux';
 

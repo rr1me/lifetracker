@@ -1,7 +1,5 @@
 import s from './HelpSlides.module.scss';
-import { Slide } from '../types';
 import icons from '../../Icons/Icons';
-import { useState } from 'react';
 import LabeledInput from '../../LabeledInput/LabeledInput';
 import { actions, AuthData } from '../../../redux/slices/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,15 +7,13 @@ import { useDispatch, useSelector } from 'react-redux';
 const { setSlide, setHelpChoice } = actions;
 
 const HelpSlides = () => {
-	const { slide, helpChoice } = useSelector((state: { authSlice: AuthData }) => state.authSlice);
+	const { helpChoice } = useSelector((state: { authSlice: AuthData }) => state.authSlice);
 	const dispatch = useDispatch();
-
-	// const [helpChoice, setHelpChoice] = useState(0); // 0 = password, 1 = message
 
 	const onBackClick = () => dispatch(setSlide(0));
 	const onOptionClick = (choice: number) => () => {
-		if (choice !== helpChoice) dispatch(setHelpChoice(choice))
-		dispatch(setSlide(2))
+		if (choice !== helpChoice) dispatch(setHelpChoice(choice));
+		dispatch(setSlide(2));
 	};
 
 	return (

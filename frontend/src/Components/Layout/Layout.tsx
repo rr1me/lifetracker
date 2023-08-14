@@ -1,12 +1,9 @@
 import s from './Layout.module.scss';
-import Navbar from '../Navbar/Navbar';
 import { BrowserRouter, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import Schedule from '../Schedule/Schedule';
-import { IScheduleSlice } from '../../redux/slices/scheduleSlice';
 import { useSelector } from 'react-redux';
 import { AuthData } from '../../redux/slices/authSlice';
 import Index from '../Auth';
-import { useLayoutEffect } from 'react';
 
 const Layout = () => {
 	const location = useLocation();

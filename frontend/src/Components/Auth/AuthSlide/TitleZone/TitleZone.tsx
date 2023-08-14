@@ -11,8 +11,6 @@ const underlinePadding = 3;
 const TitleZone: ZoneComponent = ({ isInitial }) => {
 	const { authAnimState } = useSelector((state: { authSlice: AuthData }) => state.authSlice);
 	const dispatch = useDispatch();
-
-	const titleRef = useRef<HTMLDivElement>(null);
 	const actualTitleRef = useRef<HTMLDivElement>(null);
 	const uiSelectorRef = useRef<HTMLDivElement>(null);
 
@@ -22,7 +20,6 @@ const TitleZone: ZoneComponent = ({ isInitial }) => {
 
 	useLayoutEffect(() => {
 		if (
-			!titleRef.current ||
 			!actualTitleRef.current ||
 			!uiSelectorRef.current ||
 			!selectorUnderlineRef.current ||
@@ -32,10 +29,7 @@ const TitleZone: ZoneComponent = ({ isInitial }) => {
 			return;
 
 		if (isInitial.current) {
-			// const titleRect = titleRef.current.getBoundingClientRect();
 			const actualTitleRect = actualTitleRef.current.getBoundingClientRect();
-
-			// const titleMiddle = titleRect.width / 2;
 
 			const authWidth = document.getElementById('Auth')!.getBoundingClientRect().width;
 			const titleMiddle = authWidth / 2;
@@ -74,7 +68,7 @@ const TitleZone: ZoneComponent = ({ isInitial }) => {
 	const onSelectorButtonClick = (i: uiStates) => () => dispatch(setAuthAnimState(i));
 
 	return (
-		<div className={s.title} ref={titleRef}>
+		<div className={s.title}>
 			<div className={s.actualTitle} ref={actualTitleRef}>
 				LifeTracker
 			</div>

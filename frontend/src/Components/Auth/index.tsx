@@ -1,7 +1,6 @@
 import s from './index.module.scss';
 import Slider from '../Slider/Slider';
 import AuthSlide from './AuthSlide/AuthSlide';
-import { useState } from 'react';
 import HelpSlides from './HelpSlides/HelpSlides';
 import { AuthData } from '../../redux/slices/authSlice';
 import { useSelector } from 'react-redux';

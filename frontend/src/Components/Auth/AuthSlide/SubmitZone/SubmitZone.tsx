@@ -1,5 +1,5 @@
 import s from './SubmitZone.module.scss';
-import { InteractiveZoneComponent, uiStates, ZoneComponent } from '../../types';
+import { uiStates, ZoneComponent } from '../../types';
 import { useLayoutEffect, useRef } from 'react';
 import { delay } from '../AuthSlide';
 import { actions, AuthData } from '../../../../redux/slices/authSlice';
@@ -53,7 +53,7 @@ const SubmitZone: ZoneComponent = ({ isInitial }) => {
 	}, [authAnimState]);
 
 	const onSelectorButtonClick = (i: uiStates) => () => dispatch(setAuthAnimState(i));
-	const onHelpClick = () => dispatch(setSlide(1))
+	const onHelpClick = () => dispatch(setSlide(1));
 
 	return (
 		<div className={s.submitZone} ref={buttonRowRef}>
