@@ -2,18 +2,16 @@ import s from './InputZone.module.scss';
 import LabeledInput from '../../../LabeledInput/LabeledInput';
 import { useLayoutEffect, useRef } from 'react';
 import { delay } from '../AuthSlide';
-import { AuthData } from '../../../../redux/slices/authSlice';
-import { useSelector } from 'react-redux';
+import { ZoneComponent } from '../../types';
 
-const InputZone = () => {
-	const { authAnimState } = useSelector((state: { authSlice: AuthData }) => state.authSlice);
+const InputZone: ZoneComponent = ({ authAnimState }) => {
 	const inputZoneRef = useRef<HTMLDivElement>(null);
 
 	useLayoutEffect(() => {
 		if (!inputZoneRef.current) return;
 
 		if (authAnimState !== 0) {
-			const inputShowed = s.input + ' ' + s.inputShowed;
+			const inputShowed = inputZoneRef.current.children[0].className + ' ' + s.inputShowed;
 
 			const isInitial = inputZoneRef.current.style.height === '';
 			(async () => {
@@ -46,9 +44,9 @@ const InputZone = () => {
 
 	return (
 		<div className={s.inputZone} ref={inputZoneRef}>
-			<LabeledInput className={s.input} label={'Email'} labelWidth={16.8} offset={2} />
-			<LabeledInput className={s.input} label={'Password'} labelWidth={20} offset={4} />
-			<LabeledInput className={s.input} label={'Confirm password'} labelWidth={37} offset={15} />
+			<LabeledInput className={s.input} label={'Email'}/>
+			<LabeledInput className={s.input} label={'Password'} />
+			<LabeledInput className={s.input} label={'Confirm password'} />
 		</div>
 	);
 };

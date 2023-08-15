@@ -6,7 +6,16 @@
   position: absolute;
   top: 0;
   left: 0;
+  padding: 0 8px;
+
   transition: 250ms;
   pointer-events: none;
   font-size: 13px;
+
+  background: #0D0000;
+}
+
+.blend{
+  mix-blend-mode: lighten;
+  position: relative;
 }

@@ -1,10 +1,13 @@
 import s from './AuthSlide.module.scss';
-import { useLayoutEffect, useRef, useState } from 'react';
-import InputZone from './InputZone/InputZone';
+import { memo, useLayoutEffect, useRef } from 'react';
 import TitleZone from './TitleZone/TitleZone';
 import SubmitZone from './SubmitZone/SubmitZone';
+import { AuthData } from '../../../redux/slices/authSlice';
+import { useSelector } from 'react-redux';
+import InputZone from './InputZone/InputZone';
 
 const AuthSlide = () => {
+	const authAnimState = useSelector((state: { authSlice: AuthData }) => state.authSlice.authAnimState);
 	const isInitial = useRef(true);
 
 	useLayoutEffect(() => {
@@ -12,14 +15,14 @@ const AuthSlide = () => {
 	}, []);
 
 	return (
-		<div className={s.auth}>
-			<TitleZone isInitial={isInitial} />
-			<InputZone />
-			<SubmitZone isInitial={isInitial} />
+		<div className={s.authSlide}>
+			<TitleZone isInitial={isInitial} authAnimState={authAnimState}/>
+			<InputZone authAnimState={authAnimState}/>
+			<SubmitZone isInitial={isInitial} authAnimState={authAnimState}/>
 		</div>
 	);
 };
 
 export const delay = (t: number) => new Promise(x => setTimeout(x, t));
 
-export default AuthSlide;
+export default memo(AuthSlide);

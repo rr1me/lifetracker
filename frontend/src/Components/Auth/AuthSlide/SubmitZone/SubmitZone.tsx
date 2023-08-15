@@ -1,14 +1,12 @@
 import s from './SubmitZone.module.scss';
-import { uiStates, ZoneComponent } from '../../types';
+import { UiStates, ZoneComponent } from '../../types';
 import { useLayoutEffect, useRef } from 'react';
-import { delay } from '../AuthSlide';
-import { actions, AuthData } from '../../../../redux/slices/authSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { actions } from '../../../../redux/slices/authSlice';
+import { useDispatch } from 'react-redux';
 
 const { setAuthAnimState, setSlide } = actions;
 
-const SubmitZone: ZoneComponent = ({ isInitial }) => {
-	const { authAnimState } = useSelector((state: { authSlice: AuthData }) => state.authSlice);
+const SubmitZone: ZoneComponent = ({ isInitial, authAnimState }) => {
 	const dispatch = useDispatch();
 
 	const buttonRowRef = useRef<HTMLDivElement>(null);
@@ -24,7 +22,7 @@ const SubmitZone: ZoneComponent = ({ isInitial }) => {
 		const buttonRowRect = buttonRowRef.current.getBoundingClientRect();
 		const buttonsRect = buttonsRef.current.getBoundingClientRect();
 
-		if (isInitial.current) {
+		if (isInitial!.current) {
 			const authWidth = document.getElementById('Auth')!.getBoundingClientRect().width;
 			const buttonRowMiddle = authWidth / 2;
 			const buttonsMiddle = buttonsRect.width / 2;
@@ -33,31 +31,26 @@ const SubmitZone: ZoneComponent = ({ isInitial }) => {
 			return;
 		}
 
-		if (authAnimState !== 0) {
-			(async () => {
-				if (authAnimState === 2) await delay(100);
-				helpRef.current!.style.opacity = '1';
-			})();
+		if (authAnimState === 0) return;
 
-			if (authAnimState === 1) {
-				const loginButtonRect = loginButtonRef.current.getBoundingClientRect();
-				buttonsRef.current.style.left = buttonRowRect.width - loginButtonRect.width + 'px';
-				singupButtonRef.current.style.opacity = '0';
-				loginButtonRef.current.style.opacity = '1';
-			} else if (authAnimState === 2) {
-				buttonsRef.current.style.left = buttonRowRect.width - buttonsRect.width + 'px';
-				loginButtonRef.current.style.opacity = '0';
-				singupButtonRef.current.style.opacity = '1';
-			}
+		if (authAnimState === 1) {
+			const loginButtonRect = loginButtonRef.current.getBoundingClientRect();
+			buttonsRef.current.style.left = buttonRowRect.width - loginButtonRect.width + 'px';
+			singupButtonRef.current.style.opacity = '0';
+			loginButtonRef.current.style.opacity = '1';
+		} else if (authAnimState === 2) {
+			buttonsRef.current.style.left = buttonRowRect.width - buttonsRect.width + 'px';
+			loginButtonRef.current.style.opacity = '0';
+			singupButtonRef.current.style.opacity = '1';
 		}
 	}, [authAnimState]);
 
-	const onSelectorButtonClick = (i: uiStates) => () => dispatch(setAuthAnimState(i));
+	const onSelectorButtonClick = (i: UiStates) => () => dispatch(setAuthAnimState(i));
 	const onHelpClick = () => dispatch(setSlide(1));
 
 	return (
 		<div className={s.submitZone} ref={buttonRowRef}>
-			<div onClick={onHelpClick} className={s.help} ref={helpRef}>
+			<div onClick={onHelpClick} className={s.help + (authAnimState !== 0 ? ' ' + s.helpShowed : '')} ref={helpRef}>
 				I need help
 			</div>
 			<div className={s.buttons} ref={buttonsRef}>

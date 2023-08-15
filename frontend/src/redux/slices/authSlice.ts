@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { uiStates } from '../../Components/Auth/types';
+import { UiStates } from '../../Components/Auth/types';
 // import authRequests from '../../requests/authRequests';
 
 export type AuthData = {
 	email: string;
 	role: role;
-	authAnimState: uiStates;
+	authAnimState: UiStates;
 	slide: number;
 	helpChoice: number;
 };
@@ -28,11 +28,17 @@ const authSlice = createSlice({
 	name: 'auth',
 	initialState: {} as AuthData,
 	reducers: {
-		setAuthAnimState: (state, { payload }: { payload: uiStates }) => {
+		setAuthAnimState: (state, { payload }: { payload: UiStates }) => {
 			state.authAnimState = payload;
 		},
 		setSlide: (state, { payload }: { payload: number }) => {
 			state.slide = payload;
+		},
+		forwardSlide: state => {
+			state.slide = state.slide - 1;
+		},
+		backSlide: state => {
+			state.slide = state.slide - 1;
 		},
 		setHelpChoice: (state, { payload }: { payload: number }) => {
 			state.helpChoice = payload;

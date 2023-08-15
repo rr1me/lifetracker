@@ -1,0 +1,16 @@
+@use '../authVars' as av;
+@use '../../../vars' as v;
+
+@mixin item{
+  background-color: v.$c_global;
+  border-radius: v.$b_radius;
+
+  cursor: pointer;
+  box-shadow: v.$box_shadow;
+  transition: av.$transition;
+
+  &:hover{
+    box-shadow: 0 0 5px v.$c_accent;
+    transform: translateY(-2px);
+  }
+}

@@ -1,16 +1,16 @@
 import s from './TitleZone.module.scss';
 import { useLayoutEffect, useRef } from 'react';
-import { uiStates, ZoneComponent } from '../../types';
-import { actions, AuthData } from '../../../../redux/slices/authSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { UiStates, ZoneComponent } from '../../types';
+import { actions } from '../../../../redux/slices/authSlice';
+import { useDispatch } from 'react-redux';
 
 const { setAuthAnimState } = actions;
 
 const underlinePadding = 3;
 
-const TitleZone: ZoneComponent = ({ isInitial }) => {
-	const { authAnimState } = useSelector((state: { authSlice: AuthData }) => state.authSlice);
+const TitleZone: ZoneComponent = ({ isInitial, authAnimState }) => {
 	const dispatch = useDispatch();
+
 	const actualTitleRef = useRef<HTMLDivElement>(null);
 	const uiSelectorRef = useRef<HTMLDivElement>(null);
 
@@ -28,7 +28,7 @@ const TitleZone: ZoneComponent = ({ isInitial }) => {
 		)
 			return;
 
-		if (isInitial.current) {
+		if (isInitial!.current) {
 			const actualTitleRect = actualTitleRef.current.getBoundingClientRect();
 
 			const authWidth = document.getElementById('Auth')!.getBoundingClientRect().width;
@@ -65,7 +65,7 @@ const TitleZone: ZoneComponent = ({ isInitial }) => {
 		}
 	}, [authAnimState]);
 
-	const onSelectorButtonClick = (i: uiStates) => () => dispatch(setAuthAnimState(i));
+	const onSelectorButtonClick = (i: UiStates) => () => dispatch(setAuthAnimState(i));
 
 	return (
 		<div className={s.title}>

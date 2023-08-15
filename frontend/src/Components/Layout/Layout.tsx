@@ -1,5 +1,5 @@
 import s from './Layout.module.scss';
-import { BrowserRouter, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import Schedule from '../Schedule/Schedule';
 import { useSelector } from 'react-redux';
 import { AuthData } from '../../redux/slices/authSlice';
