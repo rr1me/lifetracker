@@ -1,16 +1,51 @@
 @use '../../../../vars' as v;
 
-.choice{
+.choice {
   display: flex;
   flex-direction: column;
-  gap: 15px;
-}
+  gap: 10px;
 
-.text{
   font-size: 13px;
 }
 
-.button{
+.text {
+  font-size: 13px;
+}
+
+.button {
   @include v.button;
   align-self: flex-end;
+}
+
+.email {
+  display: flex;
+  gap: 2px;
+  width: 100%;
+}
+
+.email > p {
+  width: 167px;
+  flex-shrink: 0;
+}
+
+.uiSelector {
+  align-self: center;
+}
+
+.inputZone {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  height: 41px;
+
+  transition: v.$transition;
+}
+
+.input {
+  opacity: 0;
+  transition: v.$transition;
+}
+
+.inputShowed {
+  opacity: 1;
 }

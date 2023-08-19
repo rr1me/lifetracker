@@ -25,8 +25,8 @@ const HelpMenuSlide = ({ page }: { page: HelpMenuPage }) => {
 };
 
 const menuPages = {
-	options: <HelpOptions/>,
-	actions: <HelpActions/>
-}
+	options: <HelpOptions />,
+	actions: <HelpActions />,
+};
 
 export default memo(HelpMenuSlide);

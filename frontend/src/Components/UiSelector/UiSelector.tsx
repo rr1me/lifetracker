@@ -13,10 +13,12 @@ const UiSelector = ({ index, options, callback }: { index: number; options: stri
 		const buttonsRect = buttonsRef.current.getBoundingClientRect();
 		const childRect = buttonsRef.current.children[index].getBoundingClientRect();
 
+		console.log(childRect, buttonsRect);
 		const selectorUnderlineStyle = selectorUnderlineRef.current.style;
 
 		selectorUnderlineStyle.left = childRect.left - buttonsRect.left + underlinePadding + 'px';
 		selectorUnderlineStyle.width = childRect.width - underlinePadding * 2 + 'px';
+		console.log(childRect.width - underlinePadding * 2 + 'px');
 	}, [index]);
 
 	useEffect(() => {
@@ -34,7 +36,7 @@ const UiSelector = ({ index, options, callback }: { index: number; options: stri
 			<div className={s.buttons} ref={buttonsRef}>
 				{options.map((v, i) => {
 					return (
-						<button key={v} onClick={onOptionClick(i)}>
+						<button key={v} onClick={onOptionClick(i)} className={s.button}>
 							{v}
 						</button>
 					);

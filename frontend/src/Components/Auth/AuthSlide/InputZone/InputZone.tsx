@@ -36,7 +36,7 @@ const InputZone: ZoneComponent = ({ authAnimState }) => {
 
 			if (authAnimState === 1) {
 				const baseClassName = baseInputClassName.current;
-				if (inputs[2].className !== baseClassName) inputs[2].className = baseClassName
+				if (inputs[2].className !== baseClassName) inputs[2].className = baseClassName;
 			} else if (authAnimState === 2) {
 				(async () => {
 					if (isInitial) await delay(400);
@@ -48,9 +48,9 @@ const InputZone: ZoneComponent = ({ authAnimState }) => {
 
 	return (
 		<div className={s.inputZone} ref={inputZoneRef}>
-			<LabeledInput label={'Email'} additionalClassName={s.input}/>
-			<LabeledInput label={'Password'} additionalClassName={s.input}/>
-			<LabeledInput label={'Confirm password'} additionalClassName={s.input}/>
+			<LabeledInput label={'Email'} additionalClassName={s.input} />
+			<LabeledInput label={'Password'} additionalClassName={s.input} />
+			<LabeledInput label={'Confirm password'} additionalClassName={s.input} />
 		</div>
 	);
 };

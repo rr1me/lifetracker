@@ -16,7 +16,6 @@ const Slider = ({ children, index }: { children: ReactNode; index: number }) => 
 		setStyles({
 			main: { width: parentWidth },
 			list: { width: parentWidth * childrenCount + childrenCount - 1,
-				// transform: `translateX(-${index * parentWidth + index}px)`
 				left: `-${index * parentWidth + index}px`
 			},
 		});

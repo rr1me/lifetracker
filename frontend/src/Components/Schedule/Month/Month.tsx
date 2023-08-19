@@ -1,4 +1,5 @@
 import s from './Month.module.scss';
+import DotsSeparator from '../../DotsSeparator/DotsSeparator';
 
 const Month = () => {
 	return (
@@ -14,13 +15,6 @@ const separator = (
 	<div className={s.separator} />
 );
 
-const darkDots = (
-	<div className={s.darkDots}>
-		<div className={s.darkDot} />
-		<div className={s.darkDot} />
-	</div>
-);
-
 const redTab = <div className={s.redTab} />;
 
 const event = (
@@ -29,7 +23,7 @@ const event = (
 			<div className={s.timeRange}>00:00{redTab}08:30</div>
 			<div className={s.timeTaken}>8h 30m</div>
 		</div>
-		{darkDots}
+		<DotsSeparator/>
 		<div className={s.description}>
 			vava vivaasdasd
 		</div>

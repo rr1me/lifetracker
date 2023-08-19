@@ -16,9 +16,9 @@ const AuthSlide = () => {
 
 	return (
 		<div className={s.authSlide}>
-			<TitleZone isInitial={isInitial} authAnimState={authAnimState}/>
-			<InputZone authAnimState={authAnimState}/>
-			<SubmitZone isInitial={isInitial} authAnimState={authAnimState}/>
+			<TitleZone isInitial={isInitial} authAnimState={authAnimState} />
+			<InputZone authAnimState={authAnimState} />
+			<SubmitZone isInitial={isInitial} authAnimState={authAnimState} />
 		</div>
 	);
 };

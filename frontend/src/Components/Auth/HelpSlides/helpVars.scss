@@ -1,6 +1,6 @@
 @use '../../../vars' as v;
 
-@mixin item{
+@mixin item {
   background-color: v.$c_global;
   border-radius: v.$b_radius;
 
@@ -8,7 +8,7 @@
   box-shadow: v.$box_shadow;
   transition: v.$transition;
 
-  &:hover{
+  &:hover {
     box-shadow: 0 0 5px v.$c_accent;
     transform: translateY(-2px);
   }

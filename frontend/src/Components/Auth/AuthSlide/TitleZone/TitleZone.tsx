@@ -14,11 +14,7 @@ const TitleZone: ZoneComponent = ({ isInitial, authAnimState }) => {
 	const uiSelectorRef = useRef<HTMLDivElement>(null);
 
 	useLayoutEffect(() => {
-		if (
-			!actualTitleRef.current ||
-			!uiSelectorRef.current
-		)
-			return;
+		if (!actualTitleRef.current || !uiSelectorRef.current) return;
 
 		const actualTitleStyle = actualTitleRef.current.style;
 		const uiSelectorStyle = uiSelectorRef.current.style;

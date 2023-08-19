@@ -22,7 +22,7 @@ const HelpOptions = () => {
 				I have problems with confirmation message
 			</div>
 		</>
-	)
+	);
 };
 
 export default HelpOptions;

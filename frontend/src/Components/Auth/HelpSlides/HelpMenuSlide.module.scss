@@ -1,14 +1,14 @@
 @use '../../../vars' as v;
 @use './helpVars' as hv;
 
-.menu{
+.menu {
   padding: 5px;
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
 
-.back{
+.back {
   color: v.$c_dark;
   height: 20px;
   width: 20px;

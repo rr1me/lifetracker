@@ -4,7 +4,6 @@
   position: relative;
   font-size: 12px;
 
-  width: max-content;
   height: max-content;
 }
 
@@ -12,6 +11,10 @@
   display: flex;
   justify-content: center;
   gap: 10px;
+}
+
+.button{
+  flex-shrink: 1;
 }
 
 .selectorUnderline {
