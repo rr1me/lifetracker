@@ -1,4 +1,3 @@
-@use '../authVars' as av;
 @use '../../../vars' as v;
 
 @mixin item{
@@ -7,7 +6,7 @@
 
   cursor: pointer;
   box-shadow: v.$box_shadow;
-  transition: av.$transition;
+  transition: v.$transition;
 
   &:hover{
     box-shadow: 0 0 5px v.$c_accent;

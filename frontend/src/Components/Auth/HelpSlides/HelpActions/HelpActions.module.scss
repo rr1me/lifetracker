@@ -1,0 +1,16 @@
+@use '../../../../vars' as v;
+
+.choice{
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.text{
+  font-size: 13px;
+}
+
+.button{
+  @include v.button;
+  align-self: flex-end;
+}

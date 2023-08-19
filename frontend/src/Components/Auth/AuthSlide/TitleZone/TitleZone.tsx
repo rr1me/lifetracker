@@ -1,12 +1,11 @@
 import s from './TitleZone.module.scss';
-import { useLayoutEffect, useRef } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { UiStates, ZoneComponent } from '../../types';
 import { actions } from '../../../../redux/slices/authSlice';
 import { useDispatch } from 'react-redux';
+import UiSelector from '../../../UiSelector/UiSelector';
 
 const { setAuthAnimState } = actions;
-
-const underlinePadding = 3;
 
 const TitleZone: ZoneComponent = ({ isInitial, authAnimState }) => {
 	const dispatch = useDispatch();
@@ -14,19 +13,15 @@ const TitleZone: ZoneComponent = ({ isInitial, authAnimState }) => {
 	const actualTitleRef = useRef<HTMLDivElement>(null);
 	const uiSelectorRef = useRef<HTMLDivElement>(null);
 
-	const selectorUnderlineRef = useRef<HTMLDivElement>(null);
-	const loginSelectorButtonRef = useRef<HTMLButtonElement>(null);
-	const singupSelectorButtonRef = useRef<HTMLButtonElement>(null);
-
 	useLayoutEffect(() => {
 		if (
 			!actualTitleRef.current ||
-			!uiSelectorRef.current ||
-			!selectorUnderlineRef.current ||
-			!loginSelectorButtonRef.current ||
-			!singupSelectorButtonRef.current
+			!uiSelectorRef.current
 		)
 			return;
+
+		const actualTitleStyle = actualTitleRef.current.style;
+		const uiSelectorStyle = uiSelectorRef.current.style;
 
 		if (isInitial!.current) {
 			const actualTitleRect = actualTitleRef.current.getBoundingClientRect();
@@ -35,37 +30,22 @@ const TitleZone: ZoneComponent = ({ isInitial, authAnimState }) => {
 			const titleMiddle = authWidth / 2;
 			const actualTitleMiddle = actualTitleRect.width / 2;
 
-			actualTitleRef.current.style.left = titleMiddle - actualTitleMiddle + 'px';
+			actualTitleStyle.left = titleMiddle - actualTitleMiddle + 'px';
 
 			const uiSelectorRect = uiSelectorRef.current.getBoundingClientRect();
 			const uiSelectorMiddle = uiSelectorRect.width / 2;
-			uiSelectorRef.current.style.right = titleMiddle - uiSelectorMiddle + 'px';
+			uiSelectorStyle.right = titleMiddle - uiSelectorMiddle + 'px';
 
 			return;
 		}
 
-		if (authAnimState !== 0) {
-			actualTitleRef.current.style.left = '0';
-			uiSelectorRef.current.style.right = '0';
-
-			selectorUnderlineRef.current.style.opacity = '1';
-
-			if (authAnimState === 1) {
-				const loginSelectorButtonRect = loginSelectorButtonRef.current.getBoundingClientRect();
-
-				selectorUnderlineRef.current.style.left = underlinePadding + 'px';
-				selectorUnderlineRef.current.style.width = loginSelectorButtonRect.width - underlinePadding * 2 + 'px';
-			} else if (authAnimState === 2) {
-				const loginSelectorButtonRect = loginSelectorButtonRef.current.getBoundingClientRect();
-				const singupSelectorButtonRect = singupSelectorButtonRef.current.getBoundingClientRect();
-
-				selectorUnderlineRef.current.style.left = loginSelectorButtonRect.width + 10 + underlinePadding + 'px';
-				selectorUnderlineRef.current.style.width = singupSelectorButtonRect.width - underlinePadding * 2 + 'px';
-			}
+		if (authAnimState !== 0 && uiSelectorStyle.right !== '0') {
+			actualTitleStyle.left = '0';
+			uiSelectorStyle.right = '0';
 		}
 	}, [authAnimState]);
 
-	const onSelectorButtonClick = (i: UiStates) => () => dispatch(setAuthAnimState(i));
+	const onSelectorClick = (i: number) => dispatch(setAuthAnimState((i + 1) as UiStates));
 
 	return (
 		<div className={s.title}>
@@ -73,14 +53,8 @@ const TitleZone: ZoneComponent = ({ isInitial, authAnimState }) => {
 				LifeTracker
 			</div>
 
-			<div className={s.uiSelector + (authAnimState === 0 ? ' ' + s.uiSelectorTransparent : '')} ref={uiSelectorRef}>
-				<div className={s.selectorUnderline} ref={selectorUnderlineRef} />
-				<button className={s.uiSelectorButton} ref={loginSelectorButtonRef} onClick={onSelectorButtonClick(1)}>
-					Log in
-				</button>
-				<button className={s.uiSelectorButton} ref={singupSelectorButtonRef} onClick={onSelectorButtonClick(2)}>
-					Sign up
-				</button>
+			<div className={s.uiSelector + (authAnimState !== 0 ? ' ' + s.uiSelectorShowed : '')} ref={uiSelectorRef}>
+				<UiSelector index={authAnimState === 2 ? 1 : 0} options={['Log in', 'Sing up']} callback={onSelectorClick} />
 			</div>
 		</div>
 	);

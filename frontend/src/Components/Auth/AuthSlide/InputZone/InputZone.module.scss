@@ -1,12 +1,11 @@
 @use '../../../../vars' as v;
-@use "../../authVars" as av;
 
 .input {
-  @include av.input;
-
   opacity: 0;
-  transition: av.$transition;
+  transition: v.$transition;
   pointer-events: none;
+
+  height: max-content;
 }
 
 .inputShowed {
@@ -18,11 +17,11 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
-  transition: av.$transition;
+  transition: v.$transition;
   height: 0;
 }
 
 .inputDummy {
-  transition: av.$transition;
+  transition: v.$transition;
   height: 0;
 }

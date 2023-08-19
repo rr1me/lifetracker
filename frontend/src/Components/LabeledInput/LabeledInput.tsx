@@ -1,14 +1,19 @@
 import s from './Labelednput.module.scss';
 import { memo, useLayoutEffect, useRef, useState } from 'react';
 
-const LabeledInput = ({ className, label }: { className: string; label: string }) => {
+const LabeledInput = ({ label, additionalClassName }: { label: string, additionalClassName?: string }) => {
 	const [focus, setFocus] = useState(false);
 
 	const wrapperRef = useRef<HTMLDivElement>(null);
 	const inputRef = useRef<HTMLInputElement>(null);
 	const labelRef = useRef<HTMLDivElement>(null);
 
+	const isInitial = useRef(true);
 	useLayoutEffect(() => {
+		if (isInitial.current) {
+			isInitial.current = false;
+			return;
+		}
 		if (wrapperRef.current === null || inputRef.current === null || labelRef.current === null) return;
 
 		const wrapperRect = wrapperRef.current.getBoundingClientRect();
@@ -16,8 +21,6 @@ const LabeledInput = ({ className, label }: { className: string; label: string }
 
 		const left = inputRect.left - wrapperRect.left;
 		const top = inputRect.top - wrapperRect.top;
-
-		wrapperRef.current.style.borderRadius = '5px';
 
 		if (!focus) {
 			labelRef.current.style.left = left - 5 + 'px';
@@ -36,7 +39,7 @@ const LabeledInput = ({ className, label }: { className: string; label: string }
 	const focusEvent = (x: boolean) => () => setFocus(x);
 
 	return (
-		<div className={className + ' ' + s.blend} ref={wrapperRef}>
+		<div className={s.inputWrapper + ' ' + s.blend + (additionalClassName ? ' ' + additionalClassName : '')} ref={wrapperRef}>
 			<input type="text" className={s.input} ref={inputRef} onFocus={focusEvent(true)} onBlur={focusEvent(false)} />
 			<div className={s.label} ref={labelRef}>
 				{label}

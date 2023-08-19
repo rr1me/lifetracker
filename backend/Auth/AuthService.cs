@@ -26,7 +26,7 @@ public class AuthService
     {
         if (!new EmailAddressAttribute().IsValid(userCreds.Email))
             return new ApiResult(406, "Invalid email");
-        
+
         var postgresContext = GetPostgresContext();
 
         if (postgresContext.Users.Any(x => x.Email == userCreds.Email))
@@ -65,7 +65,7 @@ public class AuthService
         }
 
         var postgresContext = GetPostgresContext();
-        
+
         var user = postgresContext.Users.First(x => x.Email == email);
 
         if (user.Confirmed)
@@ -81,17 +81,18 @@ public class AuthService
     public ApiResult Resend(UserCreds userCreds)
     {
         var postgresContext = GetPostgresContext();
-        
+
         var user = postgresContext.Users.FirstOrDefault(x => x.Email == userCreds.Email);
-        if (user == null || user.Confirmed || !VerifyPass(userCreds.Password, user.Password))
-            return new ApiResult(410, "Unable to find unconfirmed email or password is wrong");
+        if (user == null || user.Confirmed)
+            return new ApiResult(410, "Unable to find unconfirmed email");
 
         if (userCreds.NewEmail == null)
             return _emailOrchestrator.Send(userCreds.Email)
                 ? new ApiResult(200, "New link was sent")
                 : new ApiResult(520, "We're getting problems with sending you a new link. Try again later");
 
-        if (!new EmailAddressAttribute().IsValid(userCreds.NewEmail)) return new ApiResult(406, "New email is invalid");
+        if (!new EmailAddressAttribute().IsValid(userCreds.NewEmail) || !VerifyPass(userCreds.Password, user.Password))
+            return new ApiResult(406, "New email is invalid or password is wrong");
 
         var sent = _emailOrchestrator.Send(userCreds.NewEmail);
 
@@ -107,7 +108,7 @@ public class AuthService
     public ApiResult Login(UserCreds userCreds, HttpResponse response)
     {
         var postgresContext = GetPostgresContext();
-        
+
         var user = postgresContext.Users.FirstOrDefault(x => x.Email == userCreds.Email);
         if (user is not { Confirmed: true } || !VerifyPass(userCreds.Password, user.Password))
             return new ApiResult(401, "Wrong email or password");
@@ -156,7 +157,8 @@ public class AuthService
 
     private bool VerifyPass(string hash, string password) => BCrypt.Net.BCrypt.Verify(hash, password);
 
-    private PostgresContext GetPostgresContext() => _serviceProvider.CreateScope().ServiceProvider.GetRequiredService<PostgresContext>();
+    private PostgresContext GetPostgresContext() =>
+        _serviceProvider.CreateScope().ServiceProvider.GetRequiredService<PostgresContext>();
 }
 
 public class UserCreds

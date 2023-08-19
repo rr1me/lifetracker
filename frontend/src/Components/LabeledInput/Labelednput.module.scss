@@ -1,11 +1,23 @@
-.input{
+@use '../../vars' as v;
+
+.inputWrapper {
+  font: v.$HelveticaNeueCyr;
+  font-size: 16px;
+
+  border-radius: v.$b_radius;
+  border: 1px solid v.$c_border;
+
+  padding: 11px 15px;
+}
+
+.input {
   width: 100%;
 }
 
-.label{
+.label {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 12px;
+  left: 11px;
   padding: 0 8px;
 
   transition: 250ms;
@@ -15,7 +27,7 @@
   background: #0D0000;
 }
 
-.blend{
+.blend {
   mix-blend-mode: lighten;
   position: relative;
 }

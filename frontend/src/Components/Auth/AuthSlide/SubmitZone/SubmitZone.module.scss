@@ -1,5 +1,4 @@
 @use '../../../../vars' as v;
-@use "../../authVars" as av;
 
 .buttons {
   display: flex;
@@ -11,12 +10,8 @@
 
 .button {
   @include v.button;
-  font: v.$HelveticaNeueCyr;
-  font-size: 16px;
-
-  width: max-content;
   align-self: flex-end;
-  transition: av.$transition;
+  transition: v.$transition;
 }
 
 .help {
@@ -29,7 +24,7 @@
   cursor: pointer;
   opacity: 0;
   pointer-events: none;
-  transition: av.$transition;
+  transition: v.$transition;
 }
 
 .helpShowed{

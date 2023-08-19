@@ -6,37 +6,41 @@ import { ZoneComponent } from '../../types';
 
 const InputZone: ZoneComponent = ({ authAnimState }) => {
 	const inputZoneRef = useRef<HTMLDivElement>(null);
+	const baseInputClassName = useRef('');
 
 	useLayoutEffect(() => {
 		if (!inputZoneRef.current) return;
 
 		if (authAnimState !== 0) {
-			const inputShowed = inputZoneRef.current.children[0].className + ' ' + s.inputShowed;
+			const inputs = inputZoneRef.current.children;
+			const inputZoneStyle = inputZoneRef.current.style;
 
-			const isInitial = inputZoneRef.current.style.height === '';
+			const currentInputClassName = inputs[0].className;
+			const inputShowed = currentInputClassName + ' ' + s.inputShowed;
+			const isInitial = inputZoneStyle.height === '';
+
+			if (isInitial) baseInputClassName.current = currentInputClassName;
+
 			(async () => {
-				if (isInitial) {
-					await delay(300);
-				}
+				if (isInitial) await delay(300);
 
-				const inputRect = inputZoneRef.current!.children[0].getBoundingClientRect();
-				inputZoneRef.current!.style.height = inputRect.height * (authAnimState + 1) + 15 * authAnimState + 10 + 'px';
+				const inputRect = inputs[0].getBoundingClientRect();
+				inputZoneStyle.height = inputRect.height * (authAnimState + 1) + 15 * authAnimState + 10 + 'px';
 
 				if (!isInitial) return;
 
-				const inputs = inputZoneRef.current!.children;
 				inputs[0].className = inputShowed;
 				await delay(50);
 				inputs[1].className = inputShowed;
 			})();
 
 			if (authAnimState === 1) {
-				const inputZoneChildren = inputZoneRef.current.children;
-				if (inputZoneChildren[0].className !== s.input) inputZoneChildren[2].className = s.input;
+				const baseClassName = baseInputClassName.current;
+				if (inputs[2].className !== baseClassName) inputs[2].className = baseClassName
 			} else if (authAnimState === 2) {
 				(async () => {
 					if (isInitial) await delay(400);
-					inputZoneRef.current!.children[2].className = inputShowed;
+					inputs[2].className = inputShowed;
 				})();
 			}
 		}
@@ -44,9 +48,9 @@ const InputZone: ZoneComponent = ({ authAnimState }) => {
 
 	return (
 		<div className={s.inputZone} ref={inputZoneRef}>
-			<LabeledInput className={s.input} label={'Email'}/>
-			<LabeledInput className={s.input} label={'Password'} />
-			<LabeledInput className={s.input} label={'Confirm password'} />
+			<LabeledInput label={'Email'} additionalClassName={s.input}/>
+			<LabeledInput label={'Password'} additionalClassName={s.input}/>
+			<LabeledInput label={'Confirm password'} additionalClassName={s.input}/>
 		</div>
 	);
 };
