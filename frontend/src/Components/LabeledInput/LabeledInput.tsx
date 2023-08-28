@@ -1,7 +1,17 @@
 import s from './Labelednput.module.scss';
-import { memo, useLayoutEffect, useRef, useState } from 'react';
+import { ChangeEvent, HTMLInputTypeAttribute, memo, useLayoutEffect, useRef, useState } from 'react';
 
-const LabeledInput = ({ label, additionalClassName }: { label: string, additionalClassName?: string }) => {
+const LabeledInput = ({
+	label,
+	additionalClassName,
+	onChange = undefined,
+	type = 'text',
+}: {
+	label: string;
+	additionalClassName?: string;
+	onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+	type?: HTMLInputTypeAttribute;
+}) => {
 	const [focus, setFocus] = useState(false);
 
 	const wrapperRef = useRef<HTMLDivElement>(null);
@@ -40,7 +50,7 @@ const LabeledInput = ({ label, additionalClassName }: { label: string, additiona
 
 	return (
 		<div className={s.inputWrapper + ' ' + s.blend + (additionalClassName ? ' ' + additionalClassName : '')} ref={wrapperRef}>
-			<input type="text" className={s.input} ref={inputRef} onFocus={focusEvent(true)} onBlur={focusEvent(false)} />
+			<input type={type} className={s.input} ref={inputRef} onFocus={focusEvent(true)} onBlur={focusEvent(false)} onChange={onChange} />
 			<div className={s.label} ref={labelRef}>
 				{label}
 			</div>

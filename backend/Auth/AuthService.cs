@@ -148,9 +148,10 @@ public class AuthService
         {
             SameSite = SameSiteMode.Strict,
             Expires = DateTimeOffset.FromUnixTimeSeconds(tokenResult.Expiration),
-            HttpOnly = !isAccess
+            HttpOnly = !isAccess,
+            // Domain = "http://localhost:3000"
         };
-        response.Cookies.Append((isAccess ? "access" : "refresh") + "_token", tokenResult.ToString(), options);
+        response.Cookies.Append((isAccess ? "access" : "refresh") + "_token", tokenResult.Token, options);
 
         return tokenResult;
     }

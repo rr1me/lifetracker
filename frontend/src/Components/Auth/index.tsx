@@ -6,7 +6,7 @@ import { AuthData } from '../../redux/slices/authSlice';
 import { useSelector } from 'react-redux';
 
 const AuthMain = () => {
-	const { slide } = useSelector((state: { authSlice: AuthData }) => state.authSlice);
+	const { slide } = useSelector((state: { authSlice: AuthData }) => state.authSlice.ui);
 
 	return (
 		<div className={s.auth} id={'Auth'}>

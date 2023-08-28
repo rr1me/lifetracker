@@ -9,7 +9,7 @@ import DotsSeparator from '../../../DotsSeparator/DotsSeparator';
 const HelpActions = () => {
 	const inputZoneRef = useRef<HTMLDivElement>(null);
 
-	const helpChoice = useSelector((state: { authSlice: AuthData }) => state.authSlice.helpChoice);
+	const helpChoice = useSelector((state: { authSlice: AuthData }) => state.authSlice.ui.helpChoice);
 
 	const [selectorState, setSelectorState] = useState(0);
 	const onSelectorClick = (i: number) => setSelectorState(i);

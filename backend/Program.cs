@@ -24,12 +24,19 @@ builder.Services.AddAuthorization(x =>
 
 var app = builder.Build();
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseCors(b => b.AllowAnyOrigin());
+app.UseCors(b =>
+{
+    // b.AllowAnyOrigin();
+    b.WithOrigins("http://localhost:3000");
+    b.AllowAnyMethod();
+    b.AllowCredentials();
+    b.AllowAnyHeader();
+});
 
 app.MapControllers();
 
@@ -63,13 +70,14 @@ app.Lifetime.ApplicationStopped.Register(redisContext.CloseConnection);
 app.Use(async (context, next) =>
 {
     var logger = app.Logger;
-    
+
     var request = context.Request;
 
     var requestPath = request.Path;
     var requestMethod = request.Method;
     var remoteIp = context.Connection.RemoteIpAddress.ToString();
-    logger.LogInformation($"Starting: {requestPath} | Method: {requestMethod} | RemoteIp: {remoteIp} | Date: {DateTime.Now}");
+    logger.LogInformation(
+        $"Starting: {requestPath} | Method: {requestMethod} | RemoteIp: {remoteIp} | Date: {DateTime.Now}");
     logger.LogInformation($"Headers: {string.Join(" | ", request.Headers.ToArray())}");
 
     await next.Invoke();

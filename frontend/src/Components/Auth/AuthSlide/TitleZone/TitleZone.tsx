@@ -1,13 +1,16 @@
 import s from './TitleZone.module.scss';
-import { useLayoutEffect, useRef, useState } from 'react';
-import { UiStates, ZoneComponent } from '../../types';
-import { actions } from '../../../../redux/slices/authSlice';
-import { useDispatch } from 'react-redux';
+import { useLayoutEffect, useRef } from 'react';
+import { UiStates } from '../../types';
+import { actions, AuthData } from '../../../../redux/slices/authSlice';
+import { useDispatch, useSelector } from 'react-redux';
 import UiSelector from '../../../UiSelector/UiSelector';
+import { useIsFirstRender } from '../../../Utils/customHooks';
 
 const { setAuthAnimState } = actions;
 
-const TitleZone: ZoneComponent = ({ isInitial, authAnimState }) => {
+const TitleZone = () => {
+	const authAnimState = useSelector((state: { authSlice: AuthData }) => state.authSlice.ui.authAnimState);
+	const isFirstRender = useIsFirstRender()
 	const dispatch = useDispatch();
 
 	const actualTitleRef = useRef<HTMLDivElement>(null);
@@ -19,7 +22,7 @@ const TitleZone: ZoneComponent = ({ isInitial, authAnimState }) => {
 		const actualTitleStyle = actualTitleRef.current.style;
 		const uiSelectorStyle = uiSelectorRef.current.style;
 
-		if (isInitial!.current) {
+		if (isFirstRender) {
 			const actualTitleRect = actualTitleRef.current.getBoundingClientRect();
 
 			const authWidth = document.getElementById('Auth')!.getBoundingClientRect().width;

@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 const { setSlide, setHelpChoice } = actions;
 
 const HelpOptions = () => {
-	const helpChoice = useSelector((state: { authSlice: AuthData }) => state.authSlice.helpChoice);
+	const helpChoice = useSelector((state: { authSlice: AuthData }) => state.authSlice.ui.helpChoice);
 	const dispatch = useDispatch();
 
 	const onOptionClick = (choice: number) => () => {

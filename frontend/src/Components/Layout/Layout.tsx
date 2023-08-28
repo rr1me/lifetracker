@@ -9,7 +9,7 @@ const Layout = () => {
 	const location = useLocation();
 
 	const navigate = useNavigate();
-	const authData = useSelector((state: { authSlice: AuthData }) => state.authSlice);
+	const authData = useSelector((state: { authSlice: AuthData }) => state.authSlice.ui);
 
 	const isInAuth = location.pathname != '/auth';
 

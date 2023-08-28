@@ -1,12 +1,16 @@
 import s from './SubmitZone.module.scss';
-import { UiStates, ZoneComponent } from '../../types';
+import { UiStates } from '../../types';
 import { useLayoutEffect, useRef } from 'react';
-import { actions } from '../../../../redux/slices/authSlice';
-import { useDispatch } from 'react-redux';
+import { actions, AuthData } from '../../../../redux/slices/authSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { useIsFirstRender } from '../../../Utils/customHooks';
+import { singin, singup } from '../../../../redux/thunks/authThunks';
 
 const { setAuthAnimState, setSlide } = actions;
 
-const SubmitZone: ZoneComponent = ({ isInitial, authAnimState }) => {
+const SubmitZone = () => {
+	const authAnimState = useSelector((state: { authSlice: AuthData }) => state.authSlice.ui.authAnimState);
+	const isFirstRender = useIsFirstRender()
 	const dispatch = useDispatch();
 
 	const buttonRowRef = useRef<HTMLDivElement>(null);
@@ -22,7 +26,7 @@ const SubmitZone: ZoneComponent = ({ isInitial, authAnimState }) => {
 		const buttonRowRect = buttonRowRef.current.getBoundingClientRect();
 		const buttonsRect = buttonsRef.current.getBoundingClientRect();
 
-		if (isInitial!.current) {
+		if (isFirstRender) {
 			const authWidth = document.getElementById('Auth')!.getBoundingClientRect().width;
 			const buttonRowMiddle = authWidth / 2;
 			const buttonsMiddle = buttonsRect.width / 2;
@@ -45,7 +49,19 @@ const SubmitZone: ZoneComponent = ({ isInitial, authAnimState }) => {
 		}
 	}, [authAnimState]);
 
-	const onSelectorButtonClick = (i: UiStates) => () => dispatch(setAuthAnimState(i));
+	const onSelectorButtonClick = (i: UiStates) => () => {
+		if (authAnimState === 0) {
+			dispatch(setAuthAnimState(i));
+			return;
+		}
+
+		if (i === 1){
+			dispatch(singin())
+			return;
+		}
+
+		dispatch(singup());
+	};
 	const onHelpClick = () => dispatch(setSlide(1));
 
 	return (

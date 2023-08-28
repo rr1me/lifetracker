@@ -1,14 +1,25 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice } from '@reduxjs/toolkit';
 import { UiStates } from '../../Components/Auth/types';
-// import authRequests from '../../requests/authRequests';
+import { UserCreds } from '../utils';
 
-export type AuthData = {
+type LocalAuthData = {
 	email: string;
 	role: role;
-	authAnimState: UiStates;
-	slide: number;
-	helpChoice: number;
+};
+
+export type AuthData = {
+	credentials: {
+		email: string;
+		role: role;
+		password: string;
+		confirmedPassword: string;
+	};
+
+	ui: {
+		authAnimState: UiStates;
+		slide: number;
+		helpChoice: number;
+	};
 };
 
 enum role {
@@ -16,32 +27,43 @@ enum role {
 	user,
 }
 
-// const singupThunk = createAsyncThunk(
-// 	'auth-singup',
-// 	async ({username, password}:{username: string, password: string}) => {
-// 		const r = authRequests.singup({username, password});
-//
-// 	}
-// )
+const storedAuthData = JSON.parse(localStorage.getItem('credentials')!) as LocalAuthData;
 
 const authSlice = createSlice({
 	name: 'auth',
-	initialState: {} as AuthData,
+	initialState: {
+		credentials: {
+			email: storedAuthData?.email,
+			role: storedAuthData?.role,
+			password: '',
+			confirmedPassword: '',
+		},
+
+		ui: {
+			authAnimState: 0,
+			slide: 0,
+			helpChoice: 0,
+		},
+	} as AuthData,
 	reducers: {
-		setAuthAnimState: (state, { payload }: { payload: UiStates }) => {
-			state.authAnimState = payload;
+		setAuthAnimState: ({ ui }, { payload }: { payload: UiStates }) => {
+			ui.authAnimState = payload;
 		},
-		setSlide: (state, { payload }: { payload: number }) => {
-			state.slide = payload;
+		setSlide: ({ ui }, { payload }: { payload: number }) => {
+			ui.slide = payload;
 		},
-		forwardSlide: state => {
-			state.slide = state.slide - 1;
+		backSlide: ({ ui }) => {
+			ui.slide = ui.slide - 1;
 		},
-		backSlide: state => {
-			state.slide = state.slide - 1;
+		setHelpChoice: ({ ui }, { payload }: { payload: number }) => {
+			ui.helpChoice = payload;
 		},
-		setHelpChoice: (state, { payload }: { payload: number }) => {
-			state.helpChoice = payload;
+
+		setEmail: ({ credentials }, { payload }: { payload: string }) => {
+			credentials.email = payload;
+		},
+		setPassword: ({ credentials }, { payload }: { payload: string }) => {
+			credentials.password = payload;
 		},
 	},
 });
