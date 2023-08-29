@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System.Net;
+using System.Net.Mail;
+using System.Text;
 using backend.JWT;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Gmail.v1;
@@ -20,19 +22,13 @@ public class EmailOrchestrator
         _logger = logger;
     }
 
-    public bool Send(string to)
+    public bool SendConfirmation(string to)
     {
-        var service = new GmailService(new BaseClientService.Initializer
-        {
-            HttpClientInitializer = Authorize(),
-            ApplicationName = "Web client 1"
-        });
-
         var message = "Use this link to confirm your email: https://localhost:7121/confirm/" + _jwtOrchestrator.GenerateJwtForConfirmationLink(to).Token;
 
         try
         {
-            service.Users.Messages.Send(MakeMessage(to, "LifeTracker registration confirm", message), "me").Execute();
+            SendEmail(to, message);
         }
         catch (Exception e)
         {
@@ -43,27 +39,26 @@ public class EmailOrchestrator
         return true;
     }
 
-    private Message MakeMessage(string to, string subject, string body)
+    private void SendEmail(string to, string message)
     {
-        var raw =
-            $"To: {to}\r\nSubject: {subject}\r\nContent-Type: text/html;charset=utf-8\r\n\r\n{body}";
-        return new Message { Raw = Base64UrlEncode(raw) };
-    }
+        var gmail = _config.GetSection("Gmail").Value;
+        var appPassword = _config.GetSection("AppPassword").Value;
 
-    private UserCredential Authorize()
-    {
-        var secrets = GoogleClientSecrets.FromFile(_config.GetSection("Client_Secret").Value).Secrets;
-        return GoogleWebAuthorizationBroker.AuthorizeAsync(secrets, new[] { GmailService.Scope.GmailSend },
-            "rime",
-            CancellationToken.None).Result;
-    }
-    
-    private string Base64UrlEncode(string input)
-    {
-        var inputBytes = Encoding.UTF8.GetBytes(input);
-        return Convert.ToBase64String(inputBytes)
-            .Replace('+', '-')
-            .Replace('/', '_')
-            .Replace("=", "");
+        using var smtpClient = new SmtpClient("smtp.gmail.com", 587)
+        {
+            UseDefaultCredentials = false,
+            Credentials = new NetworkCredential(gmail, appPassword),
+            EnableSsl = true
+        };
+
+        var mailMessage = new MailMessage
+        {
+            To = { to },
+            From = new MailAddress(gmail),
+            Subject = "LifeTracker registration confirm",
+            Body = message
+        };
+        
+        smtpClient.Send(mailMessage);
     }
 }

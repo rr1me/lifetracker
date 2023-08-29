@@ -32,7 +32,7 @@ public class AuthService
         if (postgresContext.Users.Any(x => x.Email == userCreds.Email))
             return new ApiResult(409, "There's already a user with that email");
 
-        if (!_emailOrchestrator.Send(userCreds.Email))
+        if (!_emailOrchestrator.SendConfirmation(userCreds.Email))
             return new ApiResult(400, "An error was intercepted. Consider check your email");
 
         var user = new User
@@ -59,7 +59,7 @@ public class AuthService
 
         if (decodeStatus == DecodeStatus.Expired)
         {
-            return _emailOrchestrator.Send(email)
+            return _emailOrchestrator.SendConfirmation(email)
                 ? new ApiResult(408, "That link is expired. New one is already sent")
                 : new ApiResult(520, "Link was expired. We're getting problems with sending new one. Try again later");
         }
@@ -87,14 +87,14 @@ public class AuthService
             return new ApiResult(410, "Unable to find unconfirmed email");
 
         if (userCreds.NewEmail == null)
-            return _emailOrchestrator.Send(userCreds.Email)
+            return _emailOrchestrator.SendConfirmation(userCreds.Email)
                 ? new ApiResult(200, "New link was sent")
                 : new ApiResult(520, "We're getting problems with sending you a new link. Try again later");
 
         if (!new EmailAddressAttribute().IsValid(userCreds.NewEmail) || !VerifyPass(userCreds.Password, user.Password))
             return new ApiResult(406, "New email is invalid or password is wrong");
 
-        var sent = _emailOrchestrator.Send(userCreds.NewEmail);
+        var sent = _emailOrchestrator.SendConfirmation(userCreds.NewEmail);
 
         if (!sent) return new ApiResult(520, "We're getting problems with sending you a new link. Try again later");
 
