@@ -6,3 +6,5 @@ export const useIsFirstRender = () => {
 	ref.current = false;
 	return isFirstRender;
 }
+
+export const delay = (t: number) => new Promise(x => setTimeout(x, t));

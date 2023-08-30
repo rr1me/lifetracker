@@ -1,6 +1,6 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { UiStates } from '../../Components/Auth/types';
-import { UserCreds } from '../utils';
+import { Errors, errorState, singin } from '../thunks/authThunks';
 
 type LocalAuthData = {
 	email: string;
@@ -12,13 +12,15 @@ export type AuthData = {
 		email: string;
 		role: role;
 		password: string;
-		confirmedPassword: string;
+		confirmPassword: string;
 	};
 
 	ui: {
 		authAnimState: UiStates;
 		slide: number;
 		helpChoice: number;
+		errorZoneHeight: number;
+		errors: Errors;
 	};
 };
 
@@ -36,13 +38,22 @@ const authSlice = createSlice({
 			email: storedAuthData?.email,
 			role: storedAuthData?.role,
 			password: '',
-			confirmedPassword: '',
+			confirmPassword: '',
 		},
 
 		ui: {
 			authAnimState: 0,
 			slide: 0,
 			helpChoice: 0,
+			errorZoneHeight: 0,
+			errors: {
+				unfilledInputs: errorState.inactive,
+				invalidEmail: errorState.inactive,
+				invalidPassword: errorState.inactive,
+				wrongCreds: errorState.inactive,
+				occupiedEmail: errorState.inactive,
+				internalError: errorState.inactive
+			},
 		},
 	} as AuthData,
 	reducers: {
@@ -58,6 +69,9 @@ const authSlice = createSlice({
 		setHelpChoice: ({ ui }, { payload }: { payload: number }) => {
 			ui.helpChoice = payload;
 		},
+		setErrorZoneHeight: ({ ui }, { payload }: { payload: number }) => {
+			ui.errorZoneHeight = payload;
+		},
 
 		setEmail: ({ credentials }, { payload }: { payload: string }) => {
 			credentials.email = payload;
@@ -65,6 +79,21 @@ const authSlice = createSlice({
 		setPassword: ({ credentials }, { payload }: { payload: string }) => {
 			credentials.password = payload;
 		},
+		setConfirmPassword: ({ credentials }, { payload }: { payload: string }) => {
+			credentials.confirmPassword = payload;
+		},
+	},
+	extraReducers: b => {
+		b
+			.addCase(singin.pending, ({ui}, action) => {
+			console.log('pending', action);
+		})
+			.addCase(singin.rejected, ({ ui }, action) => {
+			console.log('rejected');
+			const payload = action.payload as string
+			// if (!ui.errors.includes(payload))
+				ui.errors.push(payload);
+		});
 	},
 });
 

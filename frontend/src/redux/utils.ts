@@ -3,6 +3,6 @@ export const processRequest = (request: Promise<any>) => {
 }
 
 export type UserCreds = {
-	username: string,
+	email: string,
 	password: string
 };

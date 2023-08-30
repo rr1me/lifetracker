@@ -1,0 +1,21 @@
+@use '../../../../vars' as v;
+
+.errorZone{
+  //overflow: visible;
+  //height: 0;
+  //position: absolute;
+  height: max-content;
+
+  //font-size: 14px;
+  font: 500 15px HelveticaNeueCyr;
+  color: red;
+}
+
+.error{
+  transition: v.$transition;
+  opacity: 0;
+}
+
+.errorShowed{
+  opacity: 1;
+}

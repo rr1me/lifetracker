@@ -3,7 +3,7 @@ import { UiStates } from '../../types';
 import { useLayoutEffect, useRef } from 'react';
 import { actions, AuthData } from '../../../../redux/slices/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { useIsFirstRender } from '../../../Utils/customHooks';
+import { useIsFirstRender } from '../../../Utils/utils';
 import { singin, singup } from '../../../../redux/thunks/authThunks';
 
 const { setAuthAnimState, setSlide } = actions;

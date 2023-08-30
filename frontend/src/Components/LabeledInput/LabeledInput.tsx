@@ -1,5 +1,6 @@
 import s from './Labelednput.module.scss';
 import { ChangeEvent, HTMLInputTypeAttribute, memo, useLayoutEffect, useRef, useState } from 'react';
+import { useIsFirstRender } from '../Utils/utils';
 
 const LabeledInput = ({
 	label,
@@ -12,19 +13,15 @@ const LabeledInput = ({
 	onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
 	type?: HTMLInputTypeAttribute;
 }) => {
+	const isFirstRender = useIsFirstRender();
 	const [focus, setFocus] = useState(false);
 
 	const wrapperRef = useRef<HTMLDivElement>(null);
 	const inputRef = useRef<HTMLInputElement>(null);
 	const labelRef = useRef<HTMLDivElement>(null);
 
-	const isInitial = useRef(true);
 	useLayoutEffect(() => {
-		if (isInitial.current) {
-			isInitial.current = false;
-			return;
-		}
-		if (wrapperRef.current === null || inputRef.current === null || labelRef.current === null) return;
+		if (isFirstRender || !wrapperRef.current || !inputRef.current || !labelRef.current) return;
 
 		const wrapperRect = wrapperRef.current.getBoundingClientRect();
 		const inputRect = inputRef.current.getBoundingClientRect();
@@ -32,17 +29,21 @@ const LabeledInput = ({
 		const left = inputRect.left - wrapperRect.left;
 		const top = inputRect.top - wrapperRect.top;
 
+		const labelStyle = labelRef.current.style;
+
 		if (!focus) {
-			labelRef.current.style.left = left - 5 + 'px';
-			labelRef.current.style.top = top + 'px';
-			labelRef.current.style.fontSize = '13px';
+			if (inputRef.current.value !== '') return;
+
+			labelStyle.left = left - 5 + 'px';
+			labelStyle.top = top + 'px';
+			labelStyle.fontSize = '13px';
 			wrapperRef.current.style.borderImage = '';
 		}
 
 		if (focus) {
-			labelRef.current.style.left = left - 8 + 'px';
-			labelRef.current.style.top = -9 + 'px';
-			labelRef.current.style.fontSize = '12px';
+			labelStyle.left = left - 8 + 'px';
+			labelStyle.top = -9 + 'px';
+			labelStyle.fontSize = '12px';
 		}
 	}, [focus]);
 

@@ -1,11 +1,11 @@
 import s from './InputZone.module.scss';
 import LabeledInput from '../../../LabeledInput/LabeledInput';
 import { ChangeEvent, useLayoutEffect, useRef } from 'react';
-import { delay } from '../AuthSlide';
 import { actions, AuthData } from '../../../../redux/slices/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import { delay } from '../../../Utils/utils';
 
-const {setEmail, setPassword} = actions;
+const { setEmail, setPassword, setConfirmPassword } = actions;
 
 const InputZone = () => {
 	const dispatch = useDispatch();
@@ -51,15 +51,15 @@ const InputZone = () => {
 		}
 	}, [authAnimState]);
 
-
 	const onEmailChange = (e: ChangeEvent<HTMLInputElement>) => dispatch(setEmail(e.target.value));
 	const onPasswordChange = (e: ChangeEvent<HTMLInputElement>) => dispatch(setPassword(e.target.value));
+	const onConfirmPasswordChange = (e: ChangeEvent<HTMLInputElement>) => dispatch(setConfirmPassword(e.target.value));
 
 	return (
 		<div className={s.inputZone} ref={inputZoneRef}>
-			<LabeledInput label={'Email'} additionalClassName={s.input} onChange={onEmailChange}/>
-			<LabeledInput label={'Password'} additionalClassName={s.input} onChange={onPasswordChange}/>
-			<LabeledInput label={'Confirm password'} additionalClassName={s.input} />
+			<LabeledInput label={'Email'} additionalClassName={s.input} onChange={onEmailChange} />
+			<LabeledInput label={'Password'} additionalClassName={s.input} onChange={onPasswordChange} />
+			<LabeledInput label={'Confirm password'} additionalClassName={s.input} onChange={onConfirmPasswordChange} />
 		</div>
 	);
 };

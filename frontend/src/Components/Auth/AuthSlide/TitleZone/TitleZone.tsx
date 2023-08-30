@@ -4,7 +4,7 @@ import { UiStates } from '../../types';
 import { actions, AuthData } from '../../../../redux/slices/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import UiSelector from '../../../UiSelector/UiSelector';
-import { useIsFirstRender } from '../../../Utils/customHooks';
+import { useIsFirstRender } from '../../../Utils/utils';
 
 const { setAuthAnimState } = actions;
 
