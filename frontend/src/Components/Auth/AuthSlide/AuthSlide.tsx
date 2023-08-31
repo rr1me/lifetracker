@@ -8,18 +8,14 @@ import { useSelector } from 'react-redux';
 import { AuthData } from '../../../redux/slices/authSlice';
 
 const AuthSlide = () => {
-	const errorZoneHeight = useSelector((state: { authSlice: AuthData }) => state.authSlice.ui.errorZoneHeight);
+	const errorZoneHeight = useSelector((state: { authSlice: AuthData }) => state.authSlice.ui.errorZone.height);
 
 	return (
-		<div className={s.authSlide}>
-			<div style={{marginTop: errorZoneHeight + 'px'}}>
-				<TitleZone />
-				<InputZone />
-				<SubmitZone />
-			</div>
-			<div>
-				<ErrorZone />
-			</div>
+		<div className={s.authSlide} style={{ marginTop: errorZoneHeight + 'px' }}>
+			<TitleZone />
+			<InputZone />
+			<SubmitZone />
+			<ErrorZone />
 		</div>
 	);
 };

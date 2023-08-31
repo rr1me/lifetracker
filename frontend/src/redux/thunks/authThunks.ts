@@ -17,10 +17,11 @@ export const singin = createAsyncThunk('auth/singin', async (_, { getState, reje
 	const authSlice = (getState() as { authSlice: AuthData }).authSlice;
 
 	const userCreds = authSlice.credentials;
-	const errors = authSlice.ui.errors;
+	// const errors = authSlice.ui.errors;
 
+	// console.log('thunk', errors);
 
-
+	if (authSlice.ui.reject) return rejectWithValue('Error')
 
 
 	// const errors = validate({email, password});
@@ -38,8 +39,8 @@ export const singin = createAsyncThunk('auth/singin', async (_, { getState, reje
 
 
 
-	const r = await axios.post('http://localhost:5121/singin', userCreds, { withCredentials: true });
-	return r.data;
+	// const r = await axios.post('http://localhost:5121/singin', userCreds, { withCredentials: true });
+	// return r.data;
 });
 
 // const validate = (userCreds: UserCreds) => {
