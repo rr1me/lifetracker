@@ -11,7 +11,7 @@ const AuthSlide = () => {
 	const errorZoneHeight = useSelector((state: { authSlice: AuthData }) => state.authSlice.ui.errorZone.height);
 
 	return (
-		<div className={s.authSlide} style={{ marginTop: errorZoneHeight + 'px' }}>
+		<div className={s.authSlide} style={{ marginTop: errorZoneHeight + 10 + 'px' }}>
 			<TitleZone />
 			<InputZone />
 			<SubmitZone />
