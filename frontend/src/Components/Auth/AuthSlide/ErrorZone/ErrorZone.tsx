@@ -67,7 +67,6 @@ const ErrorZone = () => {
 
 				(async () => {
 					await delay(250);
-					console.log(errorBuffer);
 					setErrorBuffer(v => v.filter(x => x !== error));
 
 					requestAnimationFrame(() => {

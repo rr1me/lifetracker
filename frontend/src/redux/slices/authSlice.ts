@@ -1,7 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { UiStates } from '../../Components/Auth/types';
 import { singin } from '../thunks/authThunks';
-import { UserCreds } from '../utils';
 
 type LocalAuthData = {
 	email: string;
@@ -55,6 +54,7 @@ const authSlice = createSlice({
 					unfilledInputs: false,
 					invalidEmail: false,
 					invalidPassword: false,
+					nonequivalentPasswords: false,
 					wrongCreds: false,
 					occupiedEmail: false,
 					internalError: false,
@@ -64,8 +64,10 @@ const authSlice = createSlice({
 		},
 	} as AuthData,
 	reducers: {
-		setAuthAnimState: ({ ui }, { payload }: { payload: UiStates }) => {
-			ui.authAnimState = payload;
+		setAuthAnimState: (state, { payload }: { payload: UiStates }) => {
+			const prev = state.ui.authAnimState
+			state.ui.authAnimState = payload;
+			if (state.ui.reject && prev !== payload && prev === 2) validate(state);
 		},
 		setSlide: ({ ui }, { payload }: { payload: number }) => {
 			ui.slide = payload;
@@ -89,27 +91,16 @@ const authSlice = createSlice({
 		setConfirmPassword: ({ credentials }, { payload }: { payload: string }) => {
 			credentials.confirmPassword = payload;
 		},
-		setErrorState: ({ ui: { errorZone } }, { payload: { error, state } }: { payload: { error: string; state: boolean } }) => {
-			errorZone.errors[error as keyof typeof errorZone.errors] = state;
-		},
+		validateInputs: state => {
+			validate(state)
+		}
 	},
 	extraReducers: b => {
-		b.addCase(singin.pending, ({ credentials, ui }, action) => {
-			const { email, password, confirmPassword } = credentials;
-
-			const inputsValid = isInputsValid({ email, password });
-			ui.errorZone.errors.unfilledInputs = !inputsValid;
-
-			const emailValid = !email !== isEmailValid(email);
-			ui.errorZone.errors.invalidEmail = !emailValid
-
-			const passwordValid = !password !== isPasswordValid(password);
-			ui.errorZone.errors.invalidPassword = !passwordValid
-
-			ui.reject = !(inputsValid && emailValid && passwordValid);
+		b.addCase(singin.pending, state => {
+			state.ui.reject = !validate(state);
 		}).addCase(singin.rejected, ({ ui }, action) => {
 			const payload = action.payload as string;
-			console.log(payload);
+			// console.log(payload);
 		});
 	},
 });
@@ -117,7 +108,26 @@ const authSlice = createSlice({
 export default authSlice.reducer;
 export const actions = authSlice.actions;
 
-const isInputsValid = (data: UserCreds) => !!data.email && !!data.password;
+const validate = ({ credentials, ui }: AuthData) => {
+	const { email, password, confirmPassword } = credentials;
+
+	const inputsValid = isInputsValid(credentials, ui.authAnimState);
+	ui.errorZone.errors.unfilledInputs = !inputsValid;
+
+	const emailValid = !email !== isEmailValid(email);
+	ui.errorZone.errors.invalidEmail = !emailValid
+
+	const passwordValid = !password !== isPasswordValid(password);
+	ui.errorZone.errors.invalidPassword = !passwordValid
+
+	const confirmPasswordValid = ui.authAnimState === 2 && !!confirmPassword && password !== confirmPassword
+	ui.errorZone.errors.nonequivalentPasswords = confirmPasswordValid
+
+	return inputsValid && emailValid && passwordValid
+}
+
+const isInputsValid = ({email, password, confirmPassword}: {email: string, password: string, confirmPassword: string}, authAnimState: UiStates) =>
+	!!email && !!password && (authAnimState !== 2 || !!confirmPassword);
 const isEmailValid = (email: string) => /^[A-Z0-9._%+-]+@[A-Z0-9-]+.+.[A-Z]{2,4}$/i.test(email);
 const isPasswordValid = (password: string) => /^(?!\s*$).{5,}/.test(password);
 
@@ -125,14 +135,15 @@ export const errorMessages = {
 	unfilledInputs: 'Please fill every available input',
 	invalidEmail: 'Please provide valid email address',
 	invalidPassword: 'Password can\'t be shorter than 5 characters and shouldn\'t consist only of spaces',
+	nonequivalentPasswords: 'Passwords should be equal',
 	wrongCreds: 'Wrong email or password',
-	occupiedEmail: 'There is already a user with that email',
+	occupiedEmail: 'There is already a user with this email',
 	internalError: 'Internal error. Please try again later',
 } as {
 	[key in ErrorType]: string;
 };
 
-type ErrorType = 'unfilledInputs' | 'invalidEmail' | 'invalidPassword' | 'wrongCreds' | 'occupiedEmail' | 'internalError'
+type ErrorType = 'unfilledInputs' | 'invalidEmail' | 'invalidPassword' | 'nonequivalentPasswords' | 'wrongCreds' | 'occupiedEmail' | 'internalError'
 
 type Errors = {
 	[key in ErrorType]: boolean;

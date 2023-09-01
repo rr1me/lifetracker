@@ -55,12 +55,12 @@ const SubmitZone = () => {
 			return;
 		}
 
-		if (i === 1){
-			dispatch(singin())
-			return;
-		}
+		dispatch(singin())
+		// if (i === 1){
+		// 	return;
+		// }
 
-		dispatch(singup());
+		// dispatch(singup());
 	};
 	const onHelpClick = () => dispatch(setSlide(1));
 
