@@ -1,11 +1,12 @@
 import s from './HelpOptions.module.scss';
-import { actions, AuthData } from '../../../../redux/slices/authSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { actions } from '../../../../redux/slices/authSlice';
+import { useDispatch } from 'react-redux';
+import { useAppSelector } from '../../../../redux/store';
 
 const { setSlide, setHelpChoice } = actions;
 
 const HelpOptions = () => {
-	const helpChoice = useSelector((state: { authSlice: AuthData }) => state.authSlice.ui.helpChoice);
+	const helpChoice = useAppSelector(state => state.authSlice.ui.helpChoice);
 	const dispatch = useDispatch();
 
 	const onOptionClick = (choice: number) => () => {

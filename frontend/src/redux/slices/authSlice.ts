@@ -1,6 +1,7 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, Middleware } from '@reduxjs/toolkit';
 import { UiStates } from '../../Components/Auth/types';
-import { singin } from '../thunks/authThunks';
+import { auth } from '../thunks/authThunks';
+import { RootState } from '../store';
 
 type LocalAuthData = {
 	email: string;
@@ -82,8 +83,10 @@ const authSlice = createSlice({
 			errorZone.height = payload;
 		},
 
-		setEmail: ({ credentials }, { payload }: { payload: string }) => {
+		setEmail: ({ ui: {errorZone: {errors}}, credentials }, { payload }: { payload: string }) => {
 			credentials.email = payload;
+
+			if (errors.occupiedEmail) errors.occupiedEmail = false;
 		},
 		setPassword: ({ credentials }, { payload }: { payload: string }) => {
 			credentials.password = payload;
@@ -93,14 +96,18 @@ const authSlice = createSlice({
 		},
 		validateInputs: state => {
 			validate(state)
+		},
+		setError: ({ui: { errorZone }}, {payload: {error, state}}: {payload: {error: ErrorType, state: boolean}}) => {
+			errorZone.errors[error] = state;
 		}
 	},
 	extraReducers: b => {
-		b.addCase(singin.pending, state => {
+		b.addCase(auth.pending, state => {
 			state.ui.reject = !validate(state);
-		}).addCase(singin.rejected, ({ ui }, action) => {
-			const payload = action.payload as string;
-			// console.log(payload);
+		}).addCase(auth.rejected, ({ ui }, action) => {
+			if (ui.reject) return;
+			const error = action.payload as ErrorType;
+			ui.errorZone.errors[error] = true;
 		});
 	},
 });
@@ -111,25 +118,30 @@ export const actions = authSlice.actions;
 const validate = ({ credentials, ui }: AuthData) => {
 	const { email, password, confirmPassword } = credentials;
 
-	const inputsValid = isInputsValid(credentials, ui.authAnimState);
-	ui.errorZone.errors.unfilledInputs = !inputsValid;
+	const authAnimState = ui.authAnimState;
+	const errors = ui.errorZone.errors;
+
+	const inputsValid = isInputsValid(credentials, authAnimState);
+	errors.unfilledInputs = !inputsValid;
 
 	const emailValid = !email !== isEmailValid(email);
-	ui.errorZone.errors.invalidEmail = !emailValid
+	errors.invalidEmail = !emailValid
 
 	const passwordValid = !password !== isPasswordValid(password);
-	ui.errorZone.errors.invalidPassword = !passwordValid
+	errors.invalidPassword = !passwordValid
 
-	const confirmPasswordValid = ui.authAnimState === 2 && !!confirmPassword && password !== confirmPassword
-	ui.errorZone.errors.nonequivalentPasswords = confirmPasswordValid
+	const confirmPasswordValid = isConfirmPasswordValid(authAnimState, password, confirmPassword);
+	errors.nonequivalentPasswords = !confirmPasswordValid
 
-	return inputsValid && emailValid && passwordValid
+	return inputsValid && emailValid && passwordValid && confirmPasswordValid
 }
 
 const isInputsValid = ({email, password, confirmPassword}: {email: string, password: string, confirmPassword: string}, authAnimState: UiStates) =>
 	!!email && !!password && (authAnimState !== 2 || !!confirmPassword);
 const isEmailValid = (email: string) => /^[A-Z0-9._%+-]+@[A-Z0-9-]+.+.[A-Z]{2,4}$/i.test(email);
 const isPasswordValid = (password: string) => /^(?!\s*$).{5,}/.test(password);
+const isConfirmPasswordValid = (authAnimState: UiStates, password: string, confirmPassword: string) =>
+	authAnimState !== 2 || (!!confirmPassword && password !== confirmPassword)
 
 export const errorMessages = {
 	unfilledInputs: 'Please fill every available input',
@@ -143,7 +155,16 @@ export const errorMessages = {
 	[key in ErrorType]: string;
 };
 
-type ErrorType = 'unfilledInputs' | 'invalidEmail' | 'invalidPassword' | 'nonequivalentPasswords' | 'wrongCreds' | 'occupiedEmail' | 'internalError'
+export const wrongCredsErrorMiddleware: Middleware = api => next => action => {
+	const type = action.type;
+
+	if ((type === 'auth/setEmail' || type === 'auth/setPassword') && api.getState().authSlice.ui.errorZone.errors.wrongCreds)
+		api.dispatch(actions.setError({error: 'wrongCreds', state: false}))
+
+	next(action)
+}
+
+export type ErrorType = 'unfilledInputs' | 'invalidEmail' | 'invalidPassword' | 'nonequivalentPasswords' | 'wrongCreds' | 'occupiedEmail' | 'internalError'
 
 type Errors = {
 	[key in ErrorType]: boolean;

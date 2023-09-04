@@ -1,15 +1,16 @@
 import s from './TitleZone.module.scss';
 import { useLayoutEffect, useRef } from 'react';
 import { UiStates } from '../../types';
-import { actions, AuthData } from '../../../../redux/slices/authSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { actions } from '../../../../redux/slices/authSlice';
+import { useDispatch } from 'react-redux';
 import UiSelector from '../../../UiSelector/UiSelector';
 import { useIsFirstRender } from '../../../Utils/utils';
+import { useAppSelector } from '../../../../redux/store';
 
 const { setAuthAnimState } = actions;
 
 const TitleZone = () => {
-	const authAnimState = useSelector((state: { authSlice: AuthData }) => state.authSlice.ui.authAnimState);
+	const authAnimState = useAppSelector(state => state.authSlice.ui.authAnimState);
 	const isFirstRender = useIsFirstRender()
 	const dispatch = useDispatch();
 

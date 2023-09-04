@@ -2,11 +2,10 @@ import s from './index.module.scss';
 import Slider from '../Slider/Slider';
 import AuthSlide from './AuthSlide/AuthSlide';
 import HelpMenuSlide from './HelpSlides/HelpMenuSlide';
-import { AuthData } from '../../redux/slices/authSlice';
-import { useSelector } from 'react-redux';
+import { useAppSelector } from '../../redux/store';
 
 const AuthMain = () => {
-	const { slide } = useSelector((state: { authSlice: AuthData }) => state.authSlice.ui);
+	const { slide } = useAppSelector(state => state.authSlice.ui);
 
 	return (
 		<div className={s.auth} id={'Auth'}>

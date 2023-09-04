@@ -1,15 +1,14 @@
 import s from './Layout.module.scss';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import Schedule from '../Schedule/Schedule';
-import { useSelector } from 'react-redux';
-import { AuthData } from '../../redux/slices/authSlice';
 import Index from '../Auth';
+import { useAppSelector } from '../../redux/store';
 
 const Layout = () => {
 	const location = useLocation();
 
 	const navigate = useNavigate();
-	const authData = useSelector((state: { authSlice: AuthData }) => state.authSlice.ui);
+	const authData = useAppSelector(state => state.authSlice.ui);
 
 	const isInAuth = location.pathname != '/auth';
 

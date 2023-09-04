@@ -4,11 +4,10 @@ import TitleZone from './TitleZone/TitleZone';
 import SubmitZone from './SubmitZone/SubmitZone';
 import InputZone from './InputZone/InputZone';
 import ErrorZone from './ErrorZone/ErrorZone';
-import { useSelector } from 'react-redux';
-import { AuthData } from '../../../redux/slices/authSlice';
+import { useAppSelector } from '../../../redux/store';
 
 const AuthSlide = () => {
-	const errorZoneHeight = useSelector((state: { authSlice: AuthData }) => state.authSlice.ui.errorZone.height);
+	const errorZoneHeight = useAppSelector(state => state.authSlice.ui.errorZone.height);
 
 	return (
 		<div className={s.authSlide} style={{ marginTop: errorZoneHeight + 10 + 'px' }}>

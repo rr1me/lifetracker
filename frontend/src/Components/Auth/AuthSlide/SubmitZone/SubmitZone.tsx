@@ -1,15 +1,16 @@
 import s from './SubmitZone.module.scss';
 import { UiStates } from '../../types';
 import { useLayoutEffect, useRef } from 'react';
-import { actions, AuthData } from '../../../../redux/slices/authSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { actions } from '../../../../redux/slices/authSlice';
+import { useDispatch } from 'react-redux';
 import { useIsFirstRender } from '../../../Utils/utils';
-import { singin, singup } from '../../../../redux/thunks/authThunks';
+import { auth } from '../../../../redux/thunks/authThunks';
+import { useAppSelector } from '../../../../redux/store';
 
 const { setAuthAnimState, setSlide } = actions;
 
 const SubmitZone = () => {
-	const authAnimState = useSelector((state: { authSlice: AuthData }) => state.authSlice.ui.authAnimState);
+	const authAnimState = useAppSelector(state => state.authSlice.ui.authAnimState);
 	const isFirstRender = useIsFirstRender()
 	const dispatch = useDispatch();
 
@@ -55,12 +56,7 @@ const SubmitZone = () => {
 			return;
 		}
 
-		dispatch(singin())
-		// if (i === 1){
-		// 	return;
-		// }
-
-		// dispatch(singup());
+		dispatch(auth())
 	};
 	const onHelpClick = () => dispatch(setSlide(1));
 

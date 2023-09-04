@@ -1,15 +1,14 @@
 import s from './HelpActions.module.scss';
-import { AuthData } from '../../../../redux/slices/authSlice';
-import { useSelector } from 'react-redux';
 import LabeledInput from '../../../LabeledInput/LabeledInput';
 import UiSelector from '../../../UiSelector/UiSelector';
-import { CSSProperties, useLayoutEffect, useRef, useState } from 'react';
+import { CSSProperties, useRef, useState } from 'react';
 import DotsSeparator from '../../../DotsSeparator/DotsSeparator';
+import { useAppSelector } from '../../../../redux/store';
 
 const HelpActions = () => {
 	const inputZoneRef = useRef<HTMLDivElement>(null);
 
-	const helpChoice = useSelector((state: { authSlice: AuthData }) => state.authSlice.ui.helpChoice);
+	const helpChoice = useAppSelector(state => state.authSlice.ui.helpChoice);
 
 	const [selectorState, setSelectorState] = useState(0);
 	const onSelectorClick = (i: number) => setSelectorState(i);

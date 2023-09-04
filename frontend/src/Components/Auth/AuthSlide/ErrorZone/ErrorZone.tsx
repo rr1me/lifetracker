@@ -1,14 +1,13 @@
 import s from './ErrorZone.module.scss';
 import { useLayoutEffect, useRef, useState } from 'react';
-import { actions, AuthData, errorMessages } from '../../../../redux/slices/authSlice';
-import { useSelector } from 'react-redux';
+import { actions, errorMessages } from '../../../../redux/slices/authSlice';
 import { delay, useIsFirstRender } from '../../../Utils/utils';
-import store from '../../../../redux/store';
+import store, { useAppSelector } from '../../../../redux/store';
 
 const { setErrorZoneHeight } = actions;
 
 const ErrorZone = () => {
-	const { height, errors } = useSelector((state: { authSlice: AuthData }) => state.authSlice.ui.errorZone);
+	const { height, errors } = useAppSelector(state => state.authSlice.ui.errorZone);
 
 	const errorZoneInnerRef = useRef<HTMLDivElement>(null);
 
@@ -34,18 +33,18 @@ const ErrorZone = () => {
 
 					child.className = s.error + ' ' + s.errorShowed;
 
-					const childIndex = Number(child.ariaRowIndex)
+					const childIndex = Number(child.ariaRowIndex);
 
 					let height = 0;
 					for (let i = 0; i<childIndex; i++){
 						const prevChild = children[i];
 						if (prevChild.className === s.error) continue;
-						height += prevChild.getBoundingClientRect().height
+						height += prevChild.getBoundingClientRect().height;
 					}
 
-					child.setAttribute('style', `transform: translateY(${height}px)`)
+					child.setAttribute('style', `transform: translateY(${height}px)`);
 
-					changeZoneHeight(children)
+					changeZoneHeight(children);
 				});
 
 				continue;
@@ -62,7 +61,7 @@ const ErrorZone = () => {
 				for (let i = index; i<children.length; i++){
 					const childBelow = children[i];
 					const currentTranslate = Number(childBelow.getAttribute('style')!.match(/\d+/)![0]);
-					childBelow.setAttribute('style', `transform: translateY(${currentTranslate - child.getBoundingClientRect().height}px)`)
+					childBelow.setAttribute('style', `transform: translateY(${currentTranslate - child.getBoundingClientRect().height}px)`);
 				}
 
 				(async () => {
@@ -97,7 +96,7 @@ export default ErrorZone;
 const changeZoneHeight = (children: HTMLCollection) => {
 	let heightCalc = 0;
 	for(const child of children){
-		heightCalc += child.getBoundingClientRect().height
+		heightCalc += child.getBoundingClientRect().height;
 	}
 	store.dispatch(setErrorZoneHeight(heightCalc));
-}
+};
