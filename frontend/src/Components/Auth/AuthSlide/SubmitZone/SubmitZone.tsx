@@ -7,11 +7,11 @@ import { useIsFirstRender } from '../../../Utils/utils';
 import { auth } from '../../../../redux/thunks/authThunks';
 import { useAppSelector } from '../../../../redux/store';
 
-const { setAuthAnimState, setSlide } = actions;
+const { setAuthAnimState, forwardSlide } = actions;
 
 const SubmitZone = () => {
 	const authAnimState = useAppSelector(state => state.authSlice.ui.authAnimState);
-	const isFirstRender = useIsFirstRender()
+	const isFirstRender = useIsFirstRender();
 	const dispatch = useDispatch();
 
 	const buttonRowRef = useRef<HTMLDivElement>(null);
@@ -56,9 +56,9 @@ const SubmitZone = () => {
 			return;
 		}
 
-		dispatch(auth())
+		dispatch(auth());
 	};
-	const onHelpClick = () => dispatch(setSlide(1));
+	const onHelpClick = () => dispatch(forwardSlide());
 
 	return (
 		<div className={s.submitZone} ref={buttonRowRef}>

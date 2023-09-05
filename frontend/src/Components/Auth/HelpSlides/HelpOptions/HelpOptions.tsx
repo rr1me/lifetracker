@@ -3,7 +3,7 @@ import { actions } from '../../../../redux/slices/authSlice';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '../../../../redux/store';
 
-const { setSlide, setHelpChoice } = actions;
+const { forwardSlide, setHelpChoice } = actions;
 
 const HelpOptions = () => {
 	const helpChoice = useAppSelector(state => state.authSlice.ui.helpChoice);
@@ -11,7 +11,7 @@ const HelpOptions = () => {
 
 	const onOptionClick = (choice: number) => () => {
 		if (choice !== helpChoice) dispatch(setHelpChoice(choice));
-		dispatch(setSlide(2));
+		dispatch(forwardSlide());
 	};
 
 	return (

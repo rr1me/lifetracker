@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Transactions;
 using backend.Db;
 using backend.Email;
 using backend.Entities;
@@ -12,14 +13,16 @@ public class AuthService
     private readonly RedisContext _redisContext;
     private readonly JwtOrchestrator _jwtOrchestrator;
     private readonly EmailOrchestrator _emailOrchestrator;
+    private readonly ILogger<AuthService> _logger;
 
     public AuthService(IServiceProvider serviceProvider, RedisContext redisContext, JwtOrchestrator jwtOrchestrator,
-        EmailOrchestrator emailOrchestrator)
+        EmailOrchestrator emailOrchestrator, ILogger<AuthService> logger)
     {
         _serviceProvider = serviceProvider;
         _redisContext = redisContext;
         _jwtOrchestrator = jwtOrchestrator;
         _emailOrchestrator = emailOrchestrator;
+        _logger = logger;
     }
 
     public ApiResult Register(UserCreds userCreds)
@@ -27,25 +30,38 @@ public class AuthService
         if (!new EmailAddressAttribute().IsValid(userCreds.Email))
             return new ApiResult(406, "Invalid email");
 
-        var postgresContext = GetPostgresContext();
-
-        if (postgresContext.Users.Any(x => x.Email == userCreds.Email))
-            return new ApiResult(409, "There's already a user with that email");
-
-        if (!_emailOrchestrator.SendConfirmation(userCreds.Email))
-            return new ApiResult(400, "An error was intercepted. Consider check your email");
-
-        var user = new User
+        using var postgresContext = GetPostgresContext();
+        try
         {
-            Email = userCreds.Email,
-            Password = BCrypt.Net.BCrypt.HashPassword(userCreds.Password),
-            Role = Roles.User
-        };
+            using var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions
+            {
+                IsolationLevel = IsolationLevel.Serializable
+            });
 
-        postgresContext.Users.Add(user);
-        postgresContext.SaveChanges();
+            if (postgresContext.Users.Any(x => x.Email == userCreds.Email))
+                return new ApiResult(409, "There's already a user with that email");
 
-        return new ApiResult(200, "Registered: " + user.Email);
+            var user = new User
+            {
+                Email = userCreds.Email,
+                Password = BCrypt.Net.BCrypt.HashPassword(userCreds.Password),
+                Role = Roles.User
+            };
+
+            postgresContext.Users.Add(user);
+            postgresContext.SaveChanges();
+
+            transaction.Complete();
+        }
+        catch (Exception e)
+        {
+            _logger.LogWarning(e.ToString());
+            return new ApiResult(500, "Transaction error");
+        }
+        
+        return !_emailOrchestrator.SendConfirmation(userCreds.Email)
+            ? new ApiResult(400, "An error was intercepted. Consider check your email")
+            : new ApiResult(200, "Registered: " + userCreds.Email);
     }
 
     public ApiResult Confirm(string JWT)
@@ -64,7 +80,7 @@ public class AuthService
                 : new ApiResult(520, "Link was expired. We're getting problems with sending new one. Try again later");
         }
 
-        var postgresContext = GetPostgresContext();
+        using var postgresContext = GetPostgresContext();
 
         var user = postgresContext.Users.First(x => x.Email == email);
 
@@ -80,7 +96,7 @@ public class AuthService
 
     public ApiResult Resend(UserCreds userCreds)
     {
-        var postgresContext = GetPostgresContext();
+        using var postgresContext = GetPostgresContext();
 
         var user = postgresContext.Users.FirstOrDefault(x => x.Email == userCreds.Email);
         if (user == null || user.Confirmed)
@@ -107,7 +123,7 @@ public class AuthService
 
     public ApiResult Login(UserCreds userCreds, HttpResponse response)
     {
-        var postgresContext = GetPostgresContext();
+        using var postgresContext = GetPostgresContext();
 
         var user = postgresContext.Users.FirstOrDefault(x => x.Email == userCreds.Email);
         if (user is not { Confirmed: true } || !VerifyPass(userCreds.Password, user.Password))

@@ -3,6 +3,7 @@ import Slider from '../Slider/Slider';
 import AuthSlide from './AuthSlide/AuthSlide';
 import HelpMenuSlide from './HelpSlides/HelpMenuSlide';
 import { useAppSelector } from '../../redux/store';
+import AuthSuccessSlide from './SuccessSlides/AuthSuccessSlide';
 
 const AuthMain = () => {
 	const { slide } = useAppSelector(state => state.authSlice.ui);
@@ -10,6 +11,7 @@ const AuthMain = () => {
 	return (
 		<div className={s.auth} id={'Auth'}>
 			<Slider index={slide}>
+				<AuthSuccessSlide/>
 				<AuthSlide />
 				<HelpMenuSlide page={'options'} />
 				<HelpMenuSlide page={'actions'} />
