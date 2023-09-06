@@ -18,7 +18,6 @@ export type AuthData = {
 	ui: {
 		authAnimState: UiStates;
 		slide: number;
-		helpChoice: number;
 		errorZone: {
 			height: number;
 			errors: Errors;
@@ -57,7 +56,6 @@ const authSlice = createSlice({
 		ui: {
 			authAnimState: 0,
 			slide: 1,
-			helpChoice: 0,
 			errorZone: {
 				height: 0,
 				errors: errors,
@@ -79,9 +77,6 @@ const authSlice = createSlice({
 		},
 		forwardSlide: ({ ui }) => {
 			ui.slide++;
-		},
-		setHelpChoice: ({ ui }, { payload }: { payload: number }) => {
-			ui.helpChoice = payload;
 		},
 		setErrorZoneHeight: ({ ui: { errorZone } }, { payload }: { payload: number }) => {
 			errorZone.height = payload;

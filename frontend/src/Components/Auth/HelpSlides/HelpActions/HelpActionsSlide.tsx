@@ -15,7 +15,7 @@ const HelpActionsSlide = () => {
 
 	const inputZoneRef = useRef<HTMLDivElement>(null);
 
-	const helpChoice = useAppSelector(state => state.authSlice.ui.helpChoice);
+	const helpChoice = useAppSelector(state => state.authHelpSlice.helpChoice);
 
 	const [selectorState, setSelectorState] = useState(0);
 	const onSelectorClick = (i: number) => setSelectorState(i);
