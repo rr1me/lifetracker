@@ -1,9 +1,10 @@
 import s from './index.module.scss';
 import Slider from '../Slider/Slider';
 import AuthSlide from './AuthSlide/AuthSlide';
-import HelpMenuSlide from './HelpSlides/HelpMenuSlide';
 import { useAppSelector } from '../../redux/store';
 import AuthSuccessSlide from './SuccessSlides/AuthSuccessSlide';
+import HelpOptionsSlide from './HelpSlides/HelpOptions/HelpOptionsSlide';
+import HelpActionsSlide from './HelpSlides/HelpActions/HelpActionsSlide';
 
 const AuthMain = () => {
 	const { slide } = useAppSelector(state => state.authSlice.ui);
@@ -11,10 +12,10 @@ const AuthMain = () => {
 	return (
 		<div className={s.auth} id={'Auth'}>
 			<Slider index={slide}>
-				<AuthSuccessSlide/>
+				<AuthSuccessSlide />
 				<AuthSlide />
-				<HelpMenuSlide page={'options'} />
-				<HelpMenuSlide page={'actions'} />
+				<HelpOptionsSlide />
+				<HelpActionsSlide />
 			</Slider>
 		</div>
 	);

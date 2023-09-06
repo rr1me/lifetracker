@@ -6,10 +6,11 @@ import DotsSeparator from '../../../DotsSeparator/DotsSeparator';
 import { useAppSelector } from '../../../../redux/store';
 import { useDispatch } from 'react-redux';
 import { actions } from '../../../../redux/slices/authSlice';
+import HelpSlideWrapper from '../HelpSlideWrapper';
 
 const { setSlide } = actions;
 
-const HelpActions = () => {
+const HelpActionsSlide = () => {
 	const dispatch = useDispatch();
 
 	const inputZoneRef = useRef<HTMLDivElement>(null);
@@ -25,36 +26,38 @@ const HelpActions = () => {
 	const onSubmitClick = () => dispatch(setSlide(1)); // todo should be to success slide(->)
 
 	return (
-		<div className={s.choice}>
-			{helpChoice === 0 ? (
-				<>
-					<p className={s.text}>Type your email and we&apos;ll send you instructions to change your password</p>
-					<LabeledInput label={'Email'} />
-				</>
-			) : (
-				<>
-					<div className={s.email}>
-						<p>You can request confirmation message again or change email</p>
-						<DotsSeparator />
-						<div className={s.uiSelector}>
-							<UiSelector index={selectorState} options={['Resend', 'Change email']} callback={onSelectorClick} />
-						</div>
-					</div>
-					<div className={s.inputZone} ref={inputZoneRef} style={inputZoneStyle}>
+		<HelpSlideWrapper>
+			<div className={s.choice}>
+				{helpChoice === 0 ? (
+					<>
+						<p className={s.text}>Type your email and we&apos;ll send you instructions to change your password</p>
 						<LabeledInput label={'Email'} />
-						<LabeledInput label={'Password'} additionalClassName={s.input} />
-						<LabeledInput label={'New email'} additionalClassName={s.input} invisible={selectorState === 0}/>
-					</div>
-				</>
-			)}
-			<button className={s.button} onClick={onSubmitClick}>
-				Submit
-			</button>
-		</div>
+					</>
+				) : (
+					<>
+						<div className={s.email}>
+							<p>You can request confirmation message again or change email</p>
+							<DotsSeparator />
+							<div className={s.uiSelector}>
+								<UiSelector index={selectorState} options={['Resend', 'Change email']} callback={onSelectorClick} />
+							</div>
+						</div>
+						<div className={s.inputZone} ref={inputZoneRef} style={inputZoneStyle}>
+							<LabeledInput label={'Email'} />
+							<LabeledInput label={'Password'} additionalClassName={s.input} />
+							<LabeledInput label={'New email'} additionalClassName={s.input} invisible={selectorState === 0}/>
+						</div>
+					</>
+				)}
+				<button className={s.button} onClick={onSubmitClick}>
+					Submit
+				</button>
+			</div>
+		</HelpSlideWrapper>
 	);
 };
 
-export default HelpActions;
+export default HelpActionsSlide;
 
 // todo helpMenu errors:
 //  confirmationMessageProblems/Resend: unfilledInputs, internalError, wrongCredentials(it should work for confirmed email cases too), invalidEmail
