@@ -58,8 +58,3 @@ const HelpActionsSlide = () => {
 };
 
 export default HelpActionsSlide;
-
-// todo helpMenu errors:
-//  confirmationMessageProblems/Resend: unfilledInputs, internalError, wrongCredentials(it should work for confirmed email cases too), invalidEmail
-//  confirmationMessageProblems/ChangeEmail: unfilledInputs, internalError, wrongCredentials(it should work for confirmed email cases too), invalidEmail, newEmailIsInvalid
-//  changePassword: unfilledInputs, internalError, invalidEmail. Don't tell the user that there is no such email, give him 'success' with text: If you provided a valid email, a help instructions was sent to it

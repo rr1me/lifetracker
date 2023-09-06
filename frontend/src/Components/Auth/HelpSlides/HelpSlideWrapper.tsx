@@ -1,24 +1,28 @@
 import s from './HelpSlideWrapper.module.scss';
 import { memo, ReactNode } from 'react';
 import { useDispatch } from 'react-redux';
-import { actions } from '../../../redux/slices/authSlice';
+import { actions, errorMessages } from '../../../redux/slices/authSlice';
+import { actions as helpActions } from '../../../redux/slices/authHelpSlice';
 import icons from '../../Icons/Icons';
 import ErrorZone from '../AuthSlide/ErrorZone/ErrorZone';
+import { useAppSelector } from '../../../redux/store';
 
 const { backSlide } = actions;
+const { setErrorZoneHeight } = helpActions;
 
-const HelpSlideWrapper = ({ children }: {children: ReactNode}) => {
+const HelpSlideWrapper = ({ children }: { children: ReactNode }) => {
 	const dispatch = useDispatch();
+	const { errorZoneHeight, errors } = useAppSelector(state => state.authHelpSlice);
 
 	const onBackClick = () => dispatch(backSlide());
 
 	return (
-		<div className={s.menu}>
+		<div className={s.menu} style={{ marginTop: errorZoneHeight + 10 + 'px' }}>
 			<div className={s.back} onClick={onBackClick}>
 				{icons.arrowLeft}
 			</div>
 			{children}
-			<ErrorZone/> {/*todo should be specialized*/}
+			<ErrorZone errors={errors} errorMessages={errorMessages} height={errorZoneHeight} heightReducer={setErrorZoneHeight} />{' '}{/*todo should be specialized*/}
 		</div>
 	);
 };

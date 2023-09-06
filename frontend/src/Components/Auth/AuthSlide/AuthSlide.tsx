@@ -5,16 +5,19 @@ import SubmitZone from './SubmitZone/SubmitZone';
 import InputZone from './InputZone/InputZone';
 import ErrorZone from './ErrorZone/ErrorZone';
 import { useAppSelector } from '../../../redux/store';
+import { actions, errorMessages } from '../../../redux/slices/authSlice';
+
+const { setErrorZoneHeight } = actions;
 
 const AuthSlide = () => {
-	const errorZoneHeight = useAppSelector(state => state.authSlice.ui.errorZone.height);
+	const { height, errors } = useAppSelector(state => state.authSlice.ui.errorZone);
 
 	return (
-		<div className={s.authSlide} style={{ marginTop: errorZoneHeight + 10 + 'px' }}>
+		<div className={s.authSlide} style={{ marginTop: height + 10 + 'px' }}>
 			<TitleZone />
 			<InputZone />
 			<SubmitZone />
-			<ErrorZone />
+			<ErrorZone height={height} errors={errors} errorMessages={errorMessages} heightReducer={setErrorZoneHeight} />
 		</div>
 	);
 };
