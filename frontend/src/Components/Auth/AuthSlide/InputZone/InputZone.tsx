@@ -1,6 +1,6 @@
 import s from './InputZone.module.scss';
 import LabeledInput from '../../../LabeledInput/LabeledInput';
-import { ChangeEvent, useLayoutEffect, useRef } from 'react';
+import { ChangeEvent, useLayoutEffect, useRef, useState } from 'react';
 import { actions } from '../../../../redux/slices/authSlice';
 import { useDispatch } from 'react-redux';
 import { delay } from '../../../Utils/utils';
@@ -12,7 +12,12 @@ const InputZone = () => {
 	const dispatch = useDispatch();
 	const authAnimState = useAppSelector(state => state.authSlice.ui.authAnimState);
 	const inputZoneRef = useRef<HTMLDivElement>(null);
-	const baseInputClassName = useRef('');
+
+	const [inputInvisibility, setInputInvisibility] = useState<{ email: boolean; password: boolean; confirmPassword: boolean }>({
+		email: true,
+		password: true,
+		confirmPassword: true,
+	});
 
 	useLayoutEffect(() => {
 		if (!inputZoneRef.current) return;
@@ -21,11 +26,7 @@ const InputZone = () => {
 			const inputs = inputZoneRef.current.children;
 			const inputZoneStyle = inputZoneRef.current.style;
 
-			const currentInputClassName = inputs[0].className;
-			const inputShowed = currentInputClassName + ' ' + s.inputShowed;
 			const isInitial = inputZoneStyle.height === '';
-
-			if (isInitial) baseInputClassName.current = currentInputClassName;
 
 			(async () => {
 				if (isInitial) await delay(300);
@@ -35,18 +36,16 @@ const InputZone = () => {
 
 				if (!isInitial) return;
 
-				inputs[0].className = inputShowed;
+				setInputInvisibility(x => ({ ...x, email: false }));
 				await delay(50);
-				inputs[1].className = inputShowed;
+				setInputInvisibility(x => ({ ...x, password: false }));
 			})();
 
-			if (authAnimState === 1) {
-				const baseClassName = baseInputClassName.current;
-				if (inputs[2].className !== baseClassName) inputs[2].className = baseClassName;
-			} else if (authAnimState === 2) {
+			if (authAnimState === 1 && !inputInvisibility.confirmPassword) setInputInvisibility(x => ({ ...x, confirmPassword: true }));
+			else if (authAnimState === 2) {
 				(async () => {
 					if (isInitial) await delay(400);
-					inputs[2].className = inputShowed;
+					setInputInvisibility(x => ({ ...x, confirmPassword: false }));
 				})();
 			}
 		}
@@ -58,9 +57,9 @@ const InputZone = () => {
 
 	return (
 		<div className={s.inputZone} ref={inputZoneRef}>
-			<LabeledInput label={'Email'} additionalClassName={s.input} onChange={onEmailChange} />
-			<LabeledInput label={'Password'} additionalClassName={s.input} onChange={onPasswordChange} />
-			<LabeledInput label={'Confirm password'} additionalClassName={s.input} onChange={onConfirmPasswordChange} />
+			<LabeledInput label={'Email'} additionalClassName={s.input} onChange={onEmailChange} invisible={inputInvisibility.email} />
+			<LabeledInput label={'Password'} additionalClassName={s.input} onChange={onPasswordChange} invisible={inputInvisibility.password} />
+			<LabeledInput label={'Confirm password'} additionalClassName={s.input} onChange={onConfirmPasswordChange} invisible={inputInvisibility.confirmPassword} />
 		</div>
 	);
 };

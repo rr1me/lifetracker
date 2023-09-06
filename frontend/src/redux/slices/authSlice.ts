@@ -56,7 +56,7 @@ const authSlice = createSlice({
 
 		ui: {
 			authAnimState: 0,
-			slide: 0,
+			slide: 1,
 			helpChoice: 0,
 			errorZone: {
 				height: 0,
@@ -71,7 +71,7 @@ const authSlice = createSlice({
 			state.ui.authAnimState = payload;
 			if (state.ui.reject && prev !== payload && prev === 2) validate(state);
 		},
-		setSlide: ({ ui }, { payload }: { payload: number }) => { // currently unused
+		setSlide: ({ ui }, { payload }: { payload: number }) => { // todo currently unused
 			ui.slide = payload;
 		},
 		backSlide: ({ ui }) => {

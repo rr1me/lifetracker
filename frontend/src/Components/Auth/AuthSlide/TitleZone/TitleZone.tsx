@@ -4,7 +4,7 @@ import { UiStates } from '../../types';
 import { actions } from '../../../../redux/slices/authSlice';
 import { useDispatch } from 'react-redux';
 import UiSelector from '../../../UiSelector/UiSelector';
-import { useIsFirstRender } from '../../../Utils/utils';
+import { combinedStyle, useIsFirstRender } from '../../../Utils/utils';
 import { useAppSelector } from '../../../../redux/store';
 
 const { setAuthAnimState } = actions;
@@ -53,7 +53,7 @@ const TitleZone = () => {
 				LifeTracker
 			</div>
 
-			<div className={s.uiSelector + (authAnimState !== 0 ? ' ' + s.uiSelectorShowed : '')} ref={uiSelectorRef}>
+			<div className={s.uiSelector + combinedStyle(authAnimState !== 0, s.uiSelectorShowed)} ref={uiSelectorRef}>
 				<UiSelector index={authAnimState === 2 ? 1 : 0} options={['Log in', 'Sing up']} callback={onSelectorClick} />
 			</div>
 		</div>

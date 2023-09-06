@@ -3,14 +3,14 @@ import { UiStates } from '../../types';
 import { useLayoutEffect, useRef } from 'react';
 import { actions } from '../../../../redux/slices/authSlice';
 import { useDispatch } from 'react-redux';
-import { useIsFirstRender } from '../../../Utils/utils';
+import { combinedStyle, useIsFirstRender } from '../../../Utils/utils';
 import { auth } from '../../../../redux/thunks/authThunks';
 import { useAppSelector } from '../../../../redux/store';
 
 const { setAuthAnimState, forwardSlide } = actions;
 
 const SubmitZone = () => {
-	const authAnimState = useAppSelector(state => state.authSlice.ui.authAnimState);
+	const { authAnimState } = useAppSelector(state => state.authSlice.ui);
 	const isFirstRender = useIsFirstRender();
 	const dispatch = useDispatch();
 
@@ -41,13 +41,8 @@ const SubmitZone = () => {
 		if (authAnimState === 1) {
 			const loginButtonRect = loginButtonRef.current.getBoundingClientRect();
 			buttonsRef.current.style.left = buttonRowRect.width - loginButtonRect.width + 'px';
-			singupButtonRef.current.style.opacity = '0';
-			loginButtonRef.current.style.opacity = '1';
-		} else if (authAnimState === 2) {
+		} else if (authAnimState === 2)
 			buttonsRef.current.style.left = buttonRowRect.width - buttonsRect.width + 'px';
-			loginButtonRef.current.style.opacity = '0';
-			singupButtonRef.current.style.opacity = '1';
-		}
 	}, [authAnimState]);
 
 	const onSelectorButtonClick = (i: UiStates) => () => {
@@ -62,14 +57,14 @@ const SubmitZone = () => {
 
 	return (
 		<div className={s.submitZone} ref={buttonRowRef}>
-			<div onClick={onHelpClick} className={s.help + (authAnimState !== 0 ? ' ' + s.helpShowed : '')} ref={helpRef}>
+			<div onClick={onHelpClick} className={s.help + combinedStyle(authAnimState !== 0, s.helpShowed)} ref={helpRef}>
 				I need help
 			</div>
 			<div className={s.buttons} ref={buttonsRef}>
-				<button className={s.button} ref={loginButtonRef} onClick={onSelectorButtonClick(1)}>
+				<button className={s.button + combinedStyle(authAnimState === 2, s.buttonInvisible)} ref={loginButtonRef} onClick={onSelectorButtonClick(1)}>
 					Log in
 				</button>
-				<button className={s.button} ref={singupButtonRef} onClick={onSelectorButtonClick(2)}>
+				<button className={s.button + combinedStyle(authAnimState === 1, s.buttonInvisible)} ref={singupButtonRef} onClick={onSelectorButtonClick(2)}>
 					Sign up
 				</button>
 			</div>

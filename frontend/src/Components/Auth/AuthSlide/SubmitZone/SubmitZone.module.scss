@@ -14,6 +14,11 @@
   transition: v.$transition;
 }
 
+.buttonInvisible{
+  pointer-events: none;
+  opacity: 0;
+}
+
 .help {
   display: block;
   height: 0;
