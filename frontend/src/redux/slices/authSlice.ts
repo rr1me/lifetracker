@@ -23,6 +23,7 @@ export type AuthData = {
 			errors: Errors;
 		};
 		reject: boolean;
+		requestProcessing: boolean
 	};
 };
 
@@ -41,7 +42,7 @@ const errors = {
 	wrongCreds: false,
 	occupiedEmail: false,
 	internalError: false,
-};
+} as Errors;
 
 const authSlice = createSlice({
 	name: 'auth',
@@ -61,6 +62,7 @@ const authSlice = createSlice({
 				errors: errors,
 			},
 			reject: false,
+			requestProcessing: false
 		},
 	} as AuthData,
 	reducers: {
@@ -111,6 +113,7 @@ const authSlice = createSlice({
 	},
 	extraReducers: b => {
 		b.addCase(auth.pending, state => {
+			state.ui.requestProcessing = true;
 			state.ui.reject = !validate(state);
 		}).addCase(auth.rejected, ({ ui }, action) => {
 			if (ui.reject) return;

@@ -10,7 +10,7 @@ import { useAppSelector } from '../../../../redux/store';
 const { setAuthAnimState, forwardSlide } = actions;
 
 const SubmitZone = () => {
-	const { authAnimState } = useAppSelector(state => state.authSlice.ui);
+	const { authAnimState, requestProcessing } = useAppSelector(state => state.authSlice.ui);
 	const isFirstRender = useIsFirstRender();
 	const dispatch = useDispatch();
 
@@ -51,7 +51,7 @@ const SubmitZone = () => {
 			return;
 		}
 
-		dispatch(auth());
+		if (!requestProcessing) dispatch(auth());
 	};
 	const onHelpClick = () => dispatch(forwardSlide());
 

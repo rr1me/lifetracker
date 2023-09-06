@@ -1,8 +1,8 @@
 import s from './HelpSlideWrapper.module.scss';
 import { memo, ReactNode } from 'react';
 import { useDispatch } from 'react-redux';
-import { actions, errorMessages } from '../../../redux/slices/authSlice';
-import { actions as helpActions } from '../../../redux/slices/authHelpSlice';
+import { actions } from '../../../redux/slices/authSlice';
+import { actions as helpActions, errorMessages } from '../../../redux/slices/authHelpSlice';
 import icons from '../../Icons/Icons';
 import ErrorZone from '../AuthSlide/ErrorZone/ErrorZone';
 import { useAppSelector } from '../../../redux/store';
@@ -22,7 +22,7 @@ const HelpSlideWrapper = ({ children }: { children: ReactNode }) => {
 				{icons.arrowLeft}
 			</div>
 			{children}
-			<ErrorZone errors={errors} errorMessages={errorMessages} height={errorZoneHeight} heightReducer={setErrorZoneHeight} />{' '}{/*todo should be specialized*/}
+			<ErrorZone errors={errors} errorMessages={errorMessages} height={errorZoneHeight} heightReducer={setErrorZoneHeight} />
 		</div>
 	);
 };
