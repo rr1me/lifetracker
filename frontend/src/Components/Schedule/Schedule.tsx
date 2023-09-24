@@ -1,15 +1,16 @@
 import s from './Schedule.module.scss';
 import Month from './Month/Month';
 import Icons from '../Icons/Icons';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { actions, IScheduleSlice } from '../../redux/slices/scheduleSlice';
 import Week from './Week/Week';
+import { useAppDispatch } from '../../redux/store';
 
 const { setMonthOrWeek } = actions;
 
 const Schedule = () => {
 	const { monthOrWeek } = useSelector((state: { scheduleSlice: IScheduleSlice }) => state.scheduleSlice);
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 
 	const onSwitcherClick = (mow: boolean) => () => {
 		if (mow === monthOrWeek) {

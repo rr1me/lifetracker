@@ -1,15 +1,16 @@
 import s from './Datepicker.module.scss';
 import icons from '../Icons/Icons';
-import React, { useState, useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import Modal from '../Modal/Modal';
 import { actions, IScheduleSlice } from '../../redux/slices/scheduleSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { useAppDispatch } from '../../redux/store';
 
 const { setDate } = actions;
 
 const Datepicker = () => {
 	const { date } = useSelector((state: { scheduleSlice: IScheduleSlice }) => state.scheduleSlice);
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 	const [currentDate, setCurrentDate] = useState({ year: date.year, month: date.month });
 
 	const chosenWeekRef = useRef<HTMLDivElement>(null);

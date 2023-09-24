@@ -1,17 +1,16 @@
 import s from './HelpSlideWrapper.module.scss';
 import { memo, ReactNode } from 'react';
-import { useDispatch } from 'react-redux';
 import { actions } from '../../../redux/slices/authSlice';
 import { actions as helpActions, errorMessages } from '../../../redux/slices/authHelpSlice';
 import icons from '../../Icons/Icons';
 import ErrorZone from '../AuthSlide/ErrorZone/ErrorZone';
-import { useAppSelector } from '../../../redux/store';
+import { useAppDispatch, useAppSelector } from '../../../redux/store';
 
 const { backSlide } = actions;
 const { setErrorZoneHeight } = helpActions;
 
 const HelpSlideWrapper = ({ children }: { children: ReactNode }) => {
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 	const { errorZoneHeight, errors } = useAppSelector(state => state.authHelpSlice);
 
 	const onBackClick = () => dispatch(backSlide());

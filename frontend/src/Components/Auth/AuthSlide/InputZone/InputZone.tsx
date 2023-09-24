@@ -2,14 +2,13 @@ import s from './InputZone.module.scss';
 import LabeledInput from '../../../LabeledInput/LabeledInput';
 import { ChangeEvent, useLayoutEffect, useRef, useState } from 'react';
 import { actions } from '../../../../redux/slices/authSlice';
-import { useDispatch } from 'react-redux';
 import { delay } from '../../../Utils/utils';
-import { useAppSelector } from '../../../../redux/store';
+import { useAppDispatch, useAppSelector } from '../../../../redux/store';
 
 const { setEmail, setPassword, setConfirmPassword } = actions;
 
 const InputZone = () => {
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 	const authAnimState = useAppSelector(state => state.authSlice.ui.authAnimState);
 	const inputZoneRef = useRef<HTMLDivElement>(null);
 

@@ -1,20 +1,17 @@
 import s from './Labelednput.module.scss';
-import { ChangeEvent, HTMLInputTypeAttribute, memo, useLayoutEffect, useRef, useState } from 'react';
+import React, { HTMLProps, memo, useLayoutEffect, useRef, useState } from 'react';
 import { combinedStyle, useIsFirstRender } from '../Utils/utils';
 
 const LabeledInput = ({
 	label,
 	additionalClassName = '',
-	onChange = undefined,
-	type = 'text',
-	invisible = false
+	invisible = false,
+	...props
 }: {
 	label: string;
 	additionalClassName?: string;
-	onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
-	type?: HTMLInputTypeAttribute;
-	invisible?: boolean
-}) => {
+	invisible?: boolean;
+} & HTMLProps<HTMLInputElement>) => {
 	const isFirstRender = useIsFirstRender();
 	const [focus, setFocus] = useState(false);
 
@@ -25,11 +22,8 @@ const LabeledInput = ({
 	useLayoutEffect(() => {
 		if (isFirstRender || !wrapperRef.current || !inputRef.current || !labelRef.current) return;
 
-		const wrapperRect = wrapperRef.current.getBoundingClientRect();
-		const inputRect = inputRef.current.getBoundingClientRect();
-
-		const left = inputRect.left - wrapperRect.left;
-		const top = inputRect.top - wrapperRect.top;
+		const left = 15; // like padding
+		const top = 11;
 
 		const labelStyle = labelRef.current.style;
 
@@ -40,6 +34,8 @@ const LabeledInput = ({
 			labelStyle.top = top + 'px';
 			labelStyle.fontSize = '13px';
 			wrapperRef.current.style.borderImage = '';
+
+			return;
 		}
 
 		if (focus) {
@@ -51,10 +47,12 @@ const LabeledInput = ({
 
 	const focusEvent = (x: boolean) => () => setFocus(x);
 
-	const inputClassName = s.inputWrapper + ' ' + s.blend + combinedStyle(!!additionalClassName, additionalClassName) + combinedStyle(invisible, s.inputInvisible);
+	const inputClassName =
+		s.inputWrapper + ' ' + s.blend + combinedStyle(!!additionalClassName, additionalClassName) + combinedStyle(invisible, s.inputInvisible);
+
 	return (
 		<div className={inputClassName} ref={wrapperRef}>
-			<input type={type} className={s.input} ref={inputRef} onFocus={focusEvent(true)} onBlur={focusEvent(false)} onChange={onChange} />
+			<input {...props} className={s.input} ref={inputRef} onFocus={focusEvent(true)} onBlur={focusEvent(false)} />
 			<div className={s.label} ref={labelRef}>
 				{label}
 			</div>

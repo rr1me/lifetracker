@@ -3,15 +3,14 @@ import LabeledInput from '../../../LabeledInput/LabeledInput';
 import UiSelector from '../../../UiSelector/UiSelector';
 import { CSSProperties, useRef, useState } from 'react';
 import DotsSeparator from '../../../DotsSeparator/DotsSeparator';
-import { useAppSelector } from '../../../../redux/store';
-import { useDispatch } from 'react-redux';
+import { useAppDispatch, useAppSelector } from '../../../../redux/store';
 import { actions } from '../../../../redux/slices/authSlice';
 import HelpSlideWrapper from '../HelpSlideWrapper';
 
 const { setSlide } = actions;
 
 const HelpActionsSlide = () => {
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 
 	const inputZoneRef = useRef<HTMLDivElement>(null);
 

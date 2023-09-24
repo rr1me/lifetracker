@@ -7,11 +7,17 @@
   border-radius: v.$b_radius;
   border: 1px solid v.$c_border;
 
-  padding: 11px 15px;
+  cursor: text;
+  user-select: none;
+}
+
+.test{
+  pointer-events: none;
 }
 
 .input {
   width: 100%;
+  padding: 11px 15px;
 }
 
 .inputInvisible{

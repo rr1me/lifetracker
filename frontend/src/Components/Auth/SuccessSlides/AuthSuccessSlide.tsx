@@ -1,11 +1,11 @@
 import s from './AuthSuccessSlide.module.scss';
-import { useDispatch } from 'react-redux';
 import { actions } from '../../../redux/slices/authSlice';
+import { useAppDispatch } from '../../../redux/store';
 
 const { successReady } = actions;
 
 const AuthSuccessSlide = () => {
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 
 	const onReadyClick = () => dispatch(successReady());
 

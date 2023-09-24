@@ -116,9 +116,12 @@ const authSlice = createSlice({
 			state.ui.requestProcessing = true;
 			state.ui.reject = !validate(state);
 		}).addCase(auth.rejected, ({ ui }, action) => {
+			ui.requestProcessing = false;
 			if (ui.reject) return;
 			const error = action.payload as ErrorType;
 			ui.errorZone.errors[error] = true;
+		}).addCase(auth.fulfilled, ({ ui }) => {
+			ui.requestProcessing = false;
 		});
 	},
 });
@@ -141,8 +144,9 @@ const validate = ({ credentials, ui }: AuthData) => {
 	const passwordValid = !password !== isPasswordValid(password);
 	errors.invalidPassword = !passwordValid;
 
-	const confirmPasswordValid = isConfirmPasswordValid(authAnimState, password, confirmPassword, inputsValid);
+	const confirmPasswordValid = isConfirmPasswordValid(authAnimState, password, confirmPassword);
 	errors.nonequivalentPasswords = !confirmPasswordValid;
+	console.log(!confirmPasswordValid, !inputsValid);
 
 	return inputsValid && emailValid && passwordValid && confirmPasswordValid;
 };
@@ -151,8 +155,8 @@ const isInputsValid = ({ email, password, confirmPassword }: {email: string, pas
 	!!email && !!password && (authAnimState !== 2 || !!confirmPassword);
 const isEmailValid = (email: string) => /^[A-Z0-9._%+-]+@[A-Z0-9-]+.+.[A-Z]{2,4}$/i.test(email);
 const isPasswordValid = (password: string) => /^(?!\s*$).{5,}/.test(password);
-const isConfirmPasswordValid = (authAnimState: UiStates, password: string, confirmPassword: string, isInputsValid: boolean) =>
-	authAnimState !== 2 || !isInputsValid || (!!confirmPassword && password === confirmPassword);
+const isConfirmPasswordValid = (authAnimState: UiStates, password: string, confirmPassword: string) =>
+	authAnimState !== 2 || !password || (!!confirmPassword && password === confirmPassword);
 
 export const errorMessages = {
 	unfilledInputs: 'Please fill every available input',

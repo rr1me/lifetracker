@@ -1,8 +1,7 @@
 import s from './HelpOptions.module.scss';
 import { actions } from '../../../../redux/slices/authSlice';
 import { actions as helpActions } from '../../../../redux/slices/authHelpSlice';
-import { useDispatch } from 'react-redux';
-import { useAppSelector } from '../../../../redux/store';
+import { useAppDispatch, useAppSelector } from '../../../../redux/store';
 import HelpSlideWrapper from '../HelpSlideWrapper';
 
 const { forwardSlide } = actions;
@@ -10,7 +9,7 @@ const { setHelpChoice } = helpActions;
 
 const HelpOptionsSlide = () => {
 	const helpChoice = useAppSelector(state => state.authHelpSlice.helpChoice);
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 
 	const onOptionClick = (choice: number) => () => {
 		if (choice !== helpChoice) dispatch(setHelpChoice(choice));

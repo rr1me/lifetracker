@@ -2,17 +2,16 @@ import s from './SubmitZone.module.scss';
 import { UiStates } from '../../types';
 import { useLayoutEffect, useRef } from 'react';
 import { actions } from '../../../../redux/slices/authSlice';
-import { useDispatch } from 'react-redux';
 import { combinedStyle, useIsFirstRender } from '../../../Utils/utils';
 import { auth } from '../../../../redux/thunks/authThunks';
-import { useAppSelector } from '../../../../redux/store';
+import { useAppDispatch, useAppSelector } from '../../../../redux/store';
 
 const { setAuthAnimState, forwardSlide } = actions;
 
 const SubmitZone = () => {
 	const { authAnimState, requestProcessing } = useAppSelector(state => state.authSlice.ui);
 	const isFirstRender = useIsFirstRender();
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 
 	const buttonRowRef = useRef<HTMLDivElement>(null);
 	const buttonsRef = useRef<HTMLDivElement>(null);
@@ -50,7 +49,6 @@ const SubmitZone = () => {
 			dispatch(setAuthAnimState(i));
 			return;
 		}
-
 		if (!requestProcessing) dispatch(auth());
 	};
 	const onHelpClick = () => dispatch(forwardSlide());
