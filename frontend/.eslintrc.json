@@ -6,8 +6,8 @@
 	"extends": [
 		"eslint:recommended",
 		"plugin:react/recommended",
-		"plugin:@typescript-eslint/recommended",
-		"prettier"
+		"plugin:@typescript-eslint/recommended"
+//		"prettier"
 	],
 	"parser": "@typescript-eslint/parser",
 	"parserOptions": {
@@ -36,7 +36,12 @@
 		"no-debugger": "warn",
 		"react/prop-types": "off",
 		"object-curly-spacing": ["warn", "always"],
-		"semi": ["warn", "always"]
+		"semi": ["warn", "always"],
+		"indent": ["warn", "tab"],
+		"no-unused-expressions": "warn",
+		"@typescript-eslint/no-unused-vars": "warn",
+		"@typescript-eslint/no-explicit-any": "warn",
+		"no-mixed-spaces-and-tabs": "off"
 	},
 	"settings": {
 		"import/resolver": {

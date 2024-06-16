@@ -1,0 +1,18 @@
+@use 'src/app/vars.module' as v;
+
+.fieldsetBorder{
+  inset: -5px 0 0;
+  border: 1px solid v.$outline;
+
+  border-radius: v.$border-radius;
+
+  position: absolute;
+  pointer-events: none;
+}
+
+.legend{
+  visibility: hidden;
+  height: 11px;
+
+  transition: 250ms;
+}

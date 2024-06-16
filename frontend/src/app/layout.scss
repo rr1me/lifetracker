@@ -1,0 +1,12 @@
+@use './vars.module' as v;
+
+html, body{
+  background-color: v.$background;
+  height: 100%;
+}
+
+html{
+  color: white;
+  font-size: 14px;
+  //letter-spacing: 0.15px;
+}

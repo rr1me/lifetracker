@@ -1,0 +1,14 @@
+@use 'src/app/vars.module' as v;
+
+.button{
+  padding: 6px 10px;
+  border-radius: v.$border-radius;
+}
+
+.cyan{
+  background-color: v.$accent-cyan-500;
+}
+
+.black{
+  background-color: v.$main-50;
+}

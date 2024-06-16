@@ -1,0 +1,20 @@
+.lamp{
+	height: 100px;
+	width: 100px;
+	position: absolute;
+}
+
+.animated{
+	opacity: 0;
+	animation-play-state: paused;
+	animation-name: show;
+}
+
+@keyframes show {
+	from{
+		opacity: 0;
+	}
+	to{
+		opacity: 1;
+	}
+}

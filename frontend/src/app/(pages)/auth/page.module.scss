@@ -1,0 +1,30 @@
+.auth{
+  height: 100%;
+  width: 300px;
+  margin-inline: auto;
+  position: relative;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.light{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  top: 0;
+  left: 0;
+  position: fixed;
+
+  height: 100%;
+  width: 100%;
+
+  pointer-events: none;
+}
+
+.button{
+  align-self: flex-end;
+}

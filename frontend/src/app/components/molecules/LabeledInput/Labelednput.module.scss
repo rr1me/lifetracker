@@ -1,0 +1,46 @@
+@use 'src/app/vars.module' as v;
+
+.inputWrapper {
+  border-radius: v.$border-radius;
+
+  user-select: none;
+
+  position: relative;
+  padding: 8px 11px;
+
+  display: flex;
+  align-items: center;
+}
+
+.test{
+  pointer-events: none;
+}
+
+.input {
+  width: 100%;
+  height: 100%;
+}
+
+.inputInvisible{
+  opacity: 0;
+  pointer-events: none;
+}
+
+.label {
+  position: absolute;
+
+  pointer-events: none;
+  line-height: 12px;
+
+  transition: 250ms;
+  opacity: 0;
+}
+
+.error{
+  border-color: rgb(150, 0, 0);
+}
+
+.fieldsetBorder{
+  margin-left: 10px;
+  max-width: 0.01px;
+}
