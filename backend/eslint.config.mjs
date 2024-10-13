@@ -22,7 +22,9 @@ export default [
 			semi: ['warn', 'always'],
 			indent: ['warn', 'tab'],
 			'no-unused-expressions': 'warn',
-			'no-mixed-spaces-and-tabs': 'off'
+			'no-mixed-spaces-and-tabs': 'off',
+			'@typescript-eslint/no-unused-vars': 'warn',
+			'@typescript-eslint/no-explicit-any': 'warn'
 		},
 		settings: {
 			'import/resolver': {

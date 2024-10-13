@@ -1,0 +1,16 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Query {
+  emptyRoot: String
+}
+
+type Mutation {
+  singUp(user: UserDto!): String!
+}
+
+input UserDto {
+  email: String!
+  password: String!
+}
