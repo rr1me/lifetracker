@@ -1,3 +1,6 @@
+# custom envs
+.env.*
+
 # compiled output
 /dist
 /node_modules
