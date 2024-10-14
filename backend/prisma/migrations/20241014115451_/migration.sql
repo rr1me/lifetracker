@@ -2,6 +2,8 @@
 CREATE TABLE "user" (
     "id" SERIAL NOT NULL,
     "email" TEXT NOT NULL,
+    "confirmed" BOOLEAN NOT NULL,
+    "verifyPublicKey" TEXT,
     "password" TEXT NOT NULL,
 
     CONSTRAINT "user_pkey" PRIMARY KEY ("id")

@@ -8,4 +8,5 @@ export class User implements RestrictProperties<User, UserType> {
 	email: string;
 	confirmed: boolean;
 	password: string;
+	verifyPublicKey: string | null;
 }
